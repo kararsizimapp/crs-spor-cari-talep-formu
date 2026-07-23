@@ -177,6 +177,21 @@ app.post('/api/analyze', async (req, res) => {
   }
 });
 
+// Express error middleware for API routes to guarantee JSON responses
+app.use('/api', (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('API Route Error:', err);
+  if (err?.type === 'entity.too.large' || err?.status === 413) {
+    return res.status(413).json({
+      success: false,
+      error: 'Yüklenen belge/görsel boyutu sunucu limitini aşıyor. Lütfen daha küçük bir görsel veya metin girin.',
+    });
+  }
+  return res.status(err?.status || 500).json({
+    success: false,
+    error: err?.message || 'Sunucuda bir hata oluştu.',
+  });
+});
+
 // Express & Vite server setup
 async function startServer() {
   if (process.env.NODE_ENV !== 'production') {

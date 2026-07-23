@@ -148,10 +148,19 @@ export default function App() {
         }),
       });
 
-      const result = await response.json();
+      const responseText = await response.text();
+      let result: any;
+      try {
+        result = JSON.parse(responseText);
+      } catch (parseErr) {
+        console.error('Non-JSON server response:', responseText);
+        throw new Error(
+          'Sunucudan geçerli bir yanıt alınamadı. Yüklenen dosya boyutu yüksek olabilir veya sunucu bağlantısında kesinti oluştu. Lütfen metin olarak veya daha küçük boyutlu bir görsel yükleyerek tekrar deneyin.'
+        );
+      }
 
-      if (!result.success || !result.data) {
-        throw new Error(result.error || 'Veri analiz edilirken bir hata oluştu.');
+      if (!response.ok || !result.success || !result.data) {
+        throw new Error(result?.error || `Sunucu hatası (${response.status}). Lütfen tekrar deneyin.`);
       }
 
       const raw = result.data;

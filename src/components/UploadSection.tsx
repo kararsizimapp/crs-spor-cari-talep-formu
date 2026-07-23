@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Upload, FileText, Camera, Image, Sparkles, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { processAndCompressFile } from '../utils/fileCompressor';
 
 interface UploadSectionProps {
   onAnalyze: (fileData?: { base64: string; mimeType: string; fileName: string } | null, textContent?: string) => Promise<void>;
@@ -14,6 +15,7 @@ export const UploadSection: React.FC<UploadSectionProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'file' | 'text'>('file');
   const [pastedText, setPastedText] = useState('');
+  const [isProcessingFile, setIsProcessingFile] = useState(false);
   const [selectedFile, setSelectedFile] = useState<{
     file: File;
     previewUrl?: string;
@@ -25,23 +27,23 @@ export const UploadSection: React.FC<UploadSectionProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (file: File) => {
+  const handleFileChange = async (file: File) => {
     if (!file) return;
 
-    const mimeType = file.type || (file.name.endsWith('.pdf') ? 'application/pdf' : 'image/png');
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      const base64 = e.target?.result as string;
+    setIsProcessingFile(true);
+    try {
+      const processed = await processAndCompressFile(file);
       setSelectedFile({
         file,
-        previewUrl: file.type.startsWith('image/') ? base64 : undefined,
-        base64,
-        mimeType,
+        previewUrl: file.type.startsWith('image/') || processed.mimeType.startsWith('image/') ? processed.base64 : undefined,
+        base64: processed.base64,
+        mimeType: processed.mimeType,
       });
-    };
-
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('File compression error:', err);
+    } finally {
+      setIsProcessingFile(false);
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
