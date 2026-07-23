@@ -1,7 +1,6 @@
 import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
-import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI, Type } from '@google/genai';
 
 dotenv.config();
@@ -13,11 +12,16 @@ const PORT = 3000;
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+// Health Check Endpoint (supports both /api/health and /health)
+app.get(['/api/health', '/health'], (req, res) => {
+  res.json({ status: 'ok', environment: process.env.NODE_ENV || 'development' });
+});
+
 // Lazy Gemini AI initialization helper
 function getGeminiClient() {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    throw new Error('GEMINI_API_KEY ortam değişkeni bulunamadı. Lütfen Vercel veya sunucu panelinizin Environment Variables bölümünden GEMINI_API_KEY eklediğinizden emin olun.');
+    throw new Error('GEMINI_API_KEY ortam değişkeni bulunamadı. Lütfen Vercel panelinizden (Settings -> Environment Variables) GEMINI_API_KEY değişkenini eklediğinizden ve Redeploy yaptığınızdan emin olun.');
   }
   return new GoogleGenAI({
     apiKey,
@@ -113,13 +117,8 @@ const extractionResponseSchema = {
   },
 };
 
-// API Endpoint: Health Check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// API Endpoint: Analyze Uploaded Document or Text via Gemini 3.6 Flash
-app.post('/api/analyze', async (req, res) => {
+// API Endpoint: Analyze Uploaded Document or Text via Gemini
+app.post(['/api/analyze', '/analyze'], async (req, res) => {
   try {
     const { imageBase64, mimeType, textContent } = req.body;
 
@@ -163,8 +162,9 @@ app.post('/api/analyze', async (req, res) => {
     let lastError: any = null;
 
     const candidateModels = [
-      'gemini-3.6-flash',
-      'gemini-flash-latest',
+      'gemini-2.5-flash',
+      'gemini-2.0-flash',
+      'gemini-1.5-flash',
     ];
 
     for (const modelName of candidateModels) {
@@ -215,9 +215,9 @@ app.post('/api/analyze', async (req, res) => {
   }
 });
 
-// Express error middleware for API routes to guarantee JSON responses
-app.use('/api', (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('API Route Error:', err);
+// Global Express error middleware to guarantee JSON responses
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error('API Error Middleware:', err);
   if (err?.type === 'entity.too.large' || err?.status === 413) {
     return res.status(413).json({
       success: false,
@@ -226,13 +226,14 @@ app.use('/api', (err: any, req: express.Request, res: express.Response, next: ex
   }
   return res.status(err?.status || 500).json({
     success: false,
-    error: err?.message || 'Sunucuda bir hata oluştu.',
+    error: err?.message || 'Sunucuda beklenmeyen bir hata oluştu.',
   });
 });
 
 // Express & Vite server setup
 async function startServer() {
   if (process.env.NODE_ENV !== 'production') {
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
