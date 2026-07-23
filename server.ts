@@ -17,9 +17,16 @@ app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 function getGeminiClient() {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    throw new Error('GEMINI_API_KEY ortam değişkeni eksik. Lütfen yetkili ile iletişime geçin.');
+    throw new Error('GEMINI_API_KEY ortam değişkeni sistemde tanımlı değil.');
   }
-  return new GoogleGenAI({ apiKey });
+  return new GoogleGenAI({
+    apiKey,
+    httpOptions: {
+      headers: {
+        'User-Agent': 'aistudio-build',
+      },
+    },
+  });
 }
 
 // System Instruction for Turkish Cari Account Extraction
@@ -122,23 +129,30 @@ app.post('/api/analyze', async (req, res) => {
 
     const ai = getGeminiClient();
 
-    let contentsParts: any[] = [];
+    let contentsPayload: any;
 
     if (imageBase64 && mimeType) {
       // Clean base64 string prefix if included
       const cleanBase64 = imageBase64.replace(/^data:[^;]+;base64,/, '');
-      contentsParts.push({
-        inlineData: {
-          mimeType: mimeType || 'image/png',
-          data: cleanBase64,
+      contentsPayload = [
+        {
+          inlineData: {
+            mimeType: mimeType || 'image/png',
+            data: cleanBase64,
+          },
         },
-      });
-      contentsParts.push({
-        text: 'Lütfen bu görseldeki/belgedeki cari ve firma bilgilerini okuyup yapılandırılmış JSON olarak çıkart.',
-      });
+        {
+          text: 'Lütfen bu görseldeki/belgedeki cari ve firma bilgilerini okuyup yapılandırılmış JSON olarak çıkart.',
+        },
+      ];
     } else if (textContent) {
-      contentsParts.push({
-        text: `Aşağıdaki mesaj metnini analiz ederek cari ve firma bilgilerini yapılandırılmış JSON olarak çıkart:\n\n${textContent}`,
+      contentsPayload = [
+        `Aşağıdaki mesaj metnini analiz ederek cari ve firma bilgilerini yapılandırılmış JSON olarak çıkart:\n\n${textContent}`,
+      ];
+    } else {
+      return res.status(400).json({
+        success: false,
+        error: 'Geçersiz veri formatı. Belge veya metin bulunamadı.',
       });
     }
 
@@ -146,18 +160,16 @@ app.post('/api/analyze', async (req, res) => {
     let lastError: any = null;
 
     const candidateModels = [
-      'gemini-2.5-flash',
-      'gemini-2.0-flash',
-      'gemini-1.5-flash',
-      'gemini-flash-latest',
       'gemini-3.6-flash',
+      'gemini-2.5-flash',
+      'gemini-flash-latest',
     ];
 
     for (const modelName of candidateModels) {
       try {
         response = await ai.models.generateContent({
           model: modelName,
-          contents: { parts: contentsParts },
+          contents: contentsPayload,
           config: {
             systemInstruction: EXTRACTION_SYSTEM_INSTRUCTION,
             responseMimeType: 'application/json',

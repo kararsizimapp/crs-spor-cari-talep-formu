@@ -155,7 +155,7 @@ export default function App() {
       } catch (parseErr) {
         console.error('Non-JSON server response:', responseText);
         throw new Error(
-          'Sunucudan geçerli bir yanıt alınamadı. Yüklenen dosya boyutu yüksek olabilir veya sunucu bağlantısında kesinti oluştu. Lütfen metin olarak veya daha küçük boyutlu bir görsel yükleyerek tekrar deneyin.'
+          'Sunucudan beklenmeyen bir yanıt alındı. Lütfen görsel boyutunu küçültüp veya metni kontrol edip tekrar deneyiniz.'
         );
       }
 
