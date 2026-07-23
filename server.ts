@@ -10,8 +10,8 @@ const app = express();
 const PORT = 3000;
 
 // Increase body limit for image & PDF base64 uploads
-app.use(express.json({ limit: '25mb' }));
-app.use(express.urlencoded({ extended: true, limit: '25mb' }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Lazy Gemini AI initialization helper
 function getGeminiClient() {
@@ -164,7 +164,6 @@ app.post('/api/analyze', async (req, res) => {
 
     const candidateModels = [
       'gemini-3.6-flash',
-      'gemini-2.5-flash',
       'gemini-flash-latest',
     ];
 
@@ -194,13 +193,14 @@ app.post('/api/analyze', async (req, res) => {
       throw lastError || new Error('Yapay zeka analiz servisinden yanıt alınamadı.');
     }
 
-    const jsonText = response.text;
-    let extractedData = JSON.parse(jsonText);
+    const rawText = response.text.trim();
+    const cleanJsonText = rawText.replace(/^```(json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+    let extractedData = JSON.parse(cleanJsonText);
 
     return res.json({
       success: true,
       data: extractedData,
-      rawExtractedText: jsonText,
+      rawExtractedText: cleanJsonText,
     });
   } catch (err: any) {
     console.error('Gemini Analysis Error:', err);

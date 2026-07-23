@@ -158,8 +158,13 @@ export default function App() {
         result = JSON.parse(responseText);
       } catch (parseErr) {
         console.error('Non-JSON server response:', responseText);
+        if (response.status === 413) {
+          throw new Error('Yüklenen dosya veya metin boyutu çok yüksek. Lütfen daha küçük bir dosya ile tekrar deneyiniz.');
+        }
+        let cleanText = responseText.replace(/<[^>]*>?/gm, '').trim();
+        if (cleanText.length > 150) cleanText = cleanText.substring(0, 150) + '...';
         throw new Error(
-          'Sunucudan beklenmeyen bir yanıt alındı. Lütfen görsel boyutunu küçültüp veya metni kontrol edip tekrar deneyiniz.'
+          cleanText || `Sunucudan beklenmeyen bir yanıt alındı (${response.status}). Lütfen tekrar deneyiniz.`
         );
       }
 
