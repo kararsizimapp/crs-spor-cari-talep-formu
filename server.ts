@@ -17,16 +17,9 @@ app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 function getGeminiClient() {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    throw new Error('GEMINI_API_KEY environment variable is missing.');
+    throw new Error('GEMINI_API_KEY ortam değişkeni eksik. Lütfen yetkili ile iletişime geçin.');
   }
-  return new GoogleGenAI({
-    apiKey,
-    httpOptions: {
-      headers: {
-        'User-Agent': 'aistudio-build',
-      },
-    },
-  });
+  return new GoogleGenAI({ apiKey });
 }
 
 // System Instruction for Turkish Cari Account Extraction
@@ -149,18 +142,44 @@ app.post('/api/analyze', async (req, res) => {
       });
     }
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-3.6-flash',
-      contents: { parts: contentsParts },
-      config: {
-        systemInstruction: EXTRACTION_SYSTEM_INSTRUCTION,
-        responseMimeType: 'application/json',
-        responseSchema: extractionResponseSchema,
-        temperature: 0.1, // Low temperature for high accuracy and zero hallucination
-      },
-    });
+    let response: any = null;
+    let lastError: any = null;
 
-    const jsonText = response.text || '{}';
+    const candidateModels = [
+      'gemini-2.5-flash',
+      'gemini-2.0-flash',
+      'gemini-1.5-flash',
+      'gemini-flash-latest',
+      'gemini-3.6-flash',
+    ];
+
+    for (const modelName of candidateModels) {
+      try {
+        response = await ai.models.generateContent({
+          model: modelName,
+          contents: { parts: contentsParts },
+          config: {
+            systemInstruction: EXTRACTION_SYSTEM_INSTRUCTION,
+            responseMimeType: 'application/json',
+            responseSchema: extractionResponseSchema,
+            temperature: 0.1,
+          },
+        });
+        if (response && response.text) {
+          console.log(`Successfully generated content using model: ${modelName}`);
+          break;
+        }
+      } catch (modelErr: any) {
+        console.warn(`Model ${modelName} failed:`, modelErr?.message || modelErr);
+        lastError = modelErr;
+      }
+    }
+
+    if (!response || !response.text) {
+      throw lastError || new Error('Yapay zeka analiz servisinden yanıt alınamadı.');
+    }
+
+    const jsonText = response.text;
     let extractedData = JSON.parse(jsonText);
 
     return res.json({
@@ -170,9 +189,13 @@ app.post('/api/analyze', async (req, res) => {
     });
   } catch (err: any) {
     console.error('Gemini Analysis Error:', err);
+    let errMsg = err?.message || 'Görsel veya metin analiz edilirken bir hata oluştu.';
+    if (typeof errMsg === 'string' && (errMsg.includes('The page c') || errMsg.includes('<!DOCTYPE') || errMsg.includes('<html>'))) {
+      errMsg = 'Yapay zeka servisine bağlanırken sunucu erişim hatası oluştu. Lütfen birkaç saniye sonra tekrar deneyin.';
+    }
     return res.status(500).json({
       success: false,
-      error: err.message || 'Görsel veya metin analiz edilirken bir hata oluştu.',
+      error: errMsg,
     });
   }
 });
