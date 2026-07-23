@@ -1,0 +1,6 @@
+{
+  "name": "Cari Hesap Açma Talep Formu",
+  "description": "WhatsApp, e-posta, ekran görüntüleri veya belgelerden cari firma ve banka bilgilerini yapay zeka ile analiz edip A4 formatında Tedarikçi / Cari Hesap Açma Talep Formu PDF'i oluşturan web uygulaması.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
