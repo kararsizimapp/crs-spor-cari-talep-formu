@@ -144,6 +144,10 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
                   <div className="bg-slate-100 font-bold p-1.5 border-r border-slate-200">E-Posta</div>
                   <div className="p-1.5">{formData.eposta?.value || '-'}</div>
                 </div>
+                <div className="grid grid-cols-4 border-b border-slate-200">
+                  <div className="bg-slate-100 font-bold p-1.5 border-r border-slate-200">Firma Adresi</div>
+                  <div className="p-1.5 col-span-3 leading-relaxed whitespace-pre-wrap break-words">{formData.adres?.value || '-'}</div>
+                </div>
                 <div className="grid grid-cols-4">
                   <div className="bg-slate-100 font-bold p-1.5 border-r border-slate-200">E-Fatura Durumu</div>
                   <div className="p-1.5 border-r border-slate-200">

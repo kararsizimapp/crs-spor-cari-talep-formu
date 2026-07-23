@@ -294,13 +294,28 @@ export const FormEditor: React.FC<FormEditorProps> = ({
             <label className="block text-xs font-semibold text-slate-700 mb-1">
               Firma Açık Adresi
             </label>
-            <input
-              type="text"
+            <textarea
+              rows={2}
               value={formData.adres?.value || ''}
               onChange={(e) => updateField('adres', e.target.value)}
-              placeholder="Örn: Esentepe Mah. Büyükdere Cad. Petrol Çay Evi Şişli / İstanbul"
-              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-sky-500 outline-none"
+              placeholder="Örn: Esentepe Mah. Şehitler Cd. No:20 Merkez/Bolu İzzet Baysal Devlet Hastanesi Özlük Birimi"
+              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none transition-all resize-y min-h-[64px]"
             />
+            {formData.adres?.options && formData.adres.options.length > 0 && (
+              <div className="mt-1.5 flex flex-wrap gap-1 items-center">
+                <span className="text-[11px] text-amber-700 font-medium">Algılanan Seçenekler:</span>
+                {formData.adres.options.map((opt, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => updateField('adres', opt, 'high')}
+                    className="bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs px-2 py-0.5 rounded border border-amber-300"
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* E-Fatura ve E-Arşiv Status */}

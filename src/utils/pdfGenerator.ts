@@ -280,19 +280,26 @@ export async function generateCariFormPdf(formData: CariFormData, settings: AppS
   drawRowLabelVal(currentY, taxLabel, formData.vergiNo?.value, 'E-Posta', formData.eposta?.value);
   currentY += rowH;
 
-  // Row 4: Firma Adresi
-  drawBox(marginX, currentY, col1W, rowH, '#F1F5F9');
+  // Row 4: Firma Adresi (Dynamic Multi-Line Height)
+  const rawAddress = formData.adres?.value || '-';
+  const addressValW = col2W + col3W + col4W - 4; // Total width for value (151mm)
+  setPdfFont('normal');
+  doc.setFontSize(8);
+  const addressLines = doc.splitTextToSize(formatText(rawAddress), addressValW);
+  const addressRowH = Math.max(rowH, addressLines.length * 4.2 + 2);
+
+  drawBox(marginX, currentY, col1W, addressRowH, '#F1F5F9');
   doc.setTextColor(51, 65, 85);
   setPdfFont('bold');
   doc.setFontSize(7.5);
   doc.text(formatText('Firma Adresi'), marginX + 2, currentY + 4);
 
-  drawBox(marginX + col1W, currentY, col2W + col3W + col4W, rowH, '#FFFFFF');
+  drawBox(marginX + col1W, currentY, col2W + col3W + col4W, addressRowH, '#FFFFFF');
   doc.setTextColor(15, 23, 42);
   setPdfFont('normal');
   doc.setFontSize(8);
-  doc.text(formatText(formData.adres?.value || '-'), marginX + col1W + 2, currentY + 4);
-  currentY += rowH;
+  doc.text(addressLines, marginX + col1W + 2, currentY + 4);
+  currentY += addressRowH;
 
   // Row 5: E-Fatura Durumu & E-Arşiv Durumu with Modern Checkboxes
   drawBox(marginX, currentY, col1W, rowH, '#F1F5F9');
