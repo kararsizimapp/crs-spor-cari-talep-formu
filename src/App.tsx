@@ -106,12 +106,16 @@ export default function App() {
     showToast(`Aktif Temsilci '${selectedTemsilci}' olarak değiştirildi!`);
   };
 
+  // Reset Counter for UploadSection
+  const [resetKey, setResetKey] = useState(0);
+
   // Reset Form for a Brand New Record
   const handleNewRecord = () => {
     const newEmptyForm = createEmptyFormData(settings);
     setFormData(newEmptyForm);
     setSourceData(null);
     setAnalysisError(null);
+    setResetKey((prev) => prev + 1);
     showToast('Yeni kayıt için form ve yüklenen belge temizlendi!');
   };
 
@@ -179,6 +183,7 @@ export default function App() {
           : { value: '', confidence: 'high' },
         faks: raw.faks || { value: '', confidence: 'high' },
         eposta: raw.eposta || { value: '', confidence: 'high' },
+        adres: raw.adres || { value: '', confidence: 'high' },
         eFatura: raw.eFatura || { value: null, confidence: 'high' },
         eArsiv: raw.eArsiv || { value: null, confidence: 'high' },
 
@@ -259,6 +264,7 @@ export default function App() {
     setFormData(createEmptyFormData(settings));
     setSourceData(null);
     setAnalysisError(null);
+    setResetKey((prev) => prev + 1);
     showToast('Form ve kaynak temizlendi.');
   };
 
@@ -300,6 +306,7 @@ export default function App() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Upload & Paste Section */}
         <UploadSection
+          key={resetKey}
           onAnalyze={handleAnalyze}
           isAnalyzing={isAnalyzing}
           error={analysisError}

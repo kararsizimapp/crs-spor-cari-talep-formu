@@ -122,48 +122,11 @@ export const FormEditor: React.FC<FormEditorProps> = ({
     updateField('attachedFiles', currentList.filter((f) => f.id !== fileId));
   };
 
-  // Helper to render confidence badge
-  const renderConfidenceBadge = (confidence?: ConfidenceLevel, note?: string) => {
-    if (confidence === 'medium') {
-      return (
-        <span
-          className="inline-flex items-center space-x-1 bg-amber-100 text-amber-800 border border-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-full"
-          title={note || 'Yapay zeka bu alandan emin olamadı, lütfen kontrol edin.'}
-        >
-          <AlertTriangle className="w-3 h-3 text-amber-600" />
-          <span>Şüpheli / Kontrol Et</span>
-        </span>
-      );
-    }
-    if (confidence === 'low') {
-      return (
-        <span
-          className="inline-flex items-center space-x-1 bg-rose-100 text-rose-800 border border-rose-300 text-[10px] font-bold px-2 py-0.5 rounded-full"
-          title={note || 'Bulunamadı veya belirsiz.'}
-        >
-          <HelpCircle className="w-3 h-3 text-rose-600" />
-          <span>Eksik / Doğrula</span>
-        </span>
-      );
-    }
-    return (
-      <span className="inline-flex items-center space-x-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold px-2 py-0.5 rounded-full">
-        <CheckCircle className="w-3 h-3 text-emerald-600" />
-        <span>Yüksek Güven</span>
-      </span>
-    );
-  };
-
   // Validation Checks
   const phoneValidation = normalizePhone(formData.telefon?.value || '');
   const emailValidation = validateEmail(formData.eposta?.value || '');
   const ibanValidation = normalizeIBAN(formData.iban?.value || '');
   const taxValidation = validateTaxOrTCKN(formData.vergiNo?.value || '');
-
-  // Count medium / low confidence fields
-  const lowConfidenceCount = Object.values(formData).filter(
-    (field: any) => field?.confidence === 'medium' || field?.confidence === 'low'
-  ).length;
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-6">
@@ -178,15 +141,6 @@ export const FormEditor: React.FC<FormEditorProps> = ({
             Gerekli düzeltmeleri yapın. Tüm alanlar düzenlenebilir durumdadır.
           </p>
         </div>
-
-        {lowConfidenceCount > 0 && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-800 flex items-center space-x-2">
-            <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
-            <span>
-              <strong>{lowConfidenceCount} alan</strong> sarı/kırmızı renkle işaretlendi. Lütfen doğrulayın.
-            </span>
-          </div>
-        )}
       </div>
 
       {/* --------------------------------------------------------------------- */}
@@ -198,7 +152,6 @@ export const FormEditor: React.FC<FormEditorProps> = ({
             <Building2 className="w-4 h-4 text-sky-600" />
             1. CARİ FİRMA BİLGİLERİ
           </h3>
-          {renderConfidenceBadge(formData.firmaAdi?.confidence, formData.firmaAdi?.note)}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -212,11 +165,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               value={formData.firmaAdi?.value || ''}
               onChange={(e) => updateField('firmaAdi', e.target.value)}
               placeholder="Örn: ABC Spor Malzemeleri A.Ş."
-              className={`w-full text-sm px-3 py-2 rounded-lg border outline-none transition-all ${
-                formData.firmaAdi?.confidence === 'medium'
-                  ? 'bg-amber-50/60 border-amber-300 focus:border-amber-500'
-                  : 'border-slate-300 focus:border-sky-500 focus:ring-1 focus:ring-sky-500'
-              }`}
+              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none transition-all"
             />
             {formData.firmaAdi?.options && formData.firmaAdi.options.length > 0 && (
               <div className="mt-1.5 flex flex-wrap gap-1 items-center">
@@ -320,7 +269,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
           </div>
 
           {/* E-posta */}
-          <div className="sm:col-span-2">
+          <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
               Firma E-posta Adresi
             </label>
@@ -338,6 +287,20 @@ export const FormEditor: React.FC<FormEditorProps> = ({
             {!emailValidation.isValid && emailValidation.warning && (
               <p className="text-[11px] text-red-600 mt-1">{emailValidation.warning}</p>
             )}
+          </div>
+
+          {/* Firma Adresi */}
+          <div className="sm:col-span-2">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Firma Açık Adresi
+            </label>
+            <input
+              type="text"
+              value={formData.adres?.value || ''}
+              onChange={(e) => updateField('adres', e.target.value)}
+              placeholder="Örn: Esentepe Mah. Büyükdere Cad. Petrol Çay Evi Şişli / İstanbul"
+              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-sky-500 outline-none"
+            />
           </div>
 
           {/* E-Fatura ve E-Arşiv Status */}
@@ -462,7 +425,6 @@ export const FormEditor: React.FC<FormEditorProps> = ({
             <CreditCard className="w-4 h-4 text-sky-600" />
             3. BANKA BİLGİLERİ
           </h3>
-          {renderConfidenceBadge(formData.iban?.confidence, formData.iban?.note)}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -641,7 +603,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
 
           {/* Cari Limit */}
           <div>
-            <label className="block text-xs font-bold text-slate-800 mb-1">Cari Limit (₺)</label>
+            <label className="block text-xs font-bold text-slate-800 mb-1">Cari Limit (TL)</label>
             <input
               type="text"
               value={formData.cariLimit?.value || ''}
@@ -649,12 +611,12 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 const formatted = formatCurrencyTRY(e.target.value);
                 updateField('cariLimit', formatted);
               }}
-              placeholder="Örn: 1.000₺"
+              placeholder="Örn: 1.000 TL"
               className="w-full text-sm font-bold px-3 py-2 rounded-xl border border-slate-300 focus:border-sky-500 text-sky-950 bg-white outline-none shadow-2xs"
             />
             {formData.cariLimit?.value && (
               <p className="text-[11px] text-emerald-700 font-semibold mt-1">
-                Tutar: <span className="font-extrabold">{formData.cariLimit.value}</span>
+                Tutar: <span className="font-extrabold">{formData.cariLimit.value.replace(/₺/g, 'TL')}</span>
               </p>
             )}
           </div>
@@ -720,12 +682,12 @@ export const FormEditor: React.FC<FormEditorProps> = ({
             </p>
           </div>
 
-          {/* Doküman Kodu / Form Türü */}
+          {/* Doküman Kodu / Çalışma Şekli */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <label className="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
                 <FileText className="w-4 h-4 text-sky-600" />
-                <span>Doküman Kodu</span>
+                <span>Doküman Kodu / Çalışma Şekli</span>
               </label>
               <span className="text-[11px] text-sky-700 font-bold bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200">
                 (Tıklayarak değiştirin)
@@ -757,9 +719,6 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 );
               })}
             </div>
-            <p className="text-[11px] text-slate-500 flex items-center gap-1">
-              <span>💡 Doküman kodu formun sağ üst köşesinde standart olarak yer alır.</span>
-            </p>
           </div>
         </div>
 

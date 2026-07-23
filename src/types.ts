@@ -26,6 +26,7 @@ export interface CariFormData {
   telefon: FieldWithConfidence<string>;
   faks: FieldWithConfidence<string>;
   eposta: FieldWithConfidence<string>;
+  adres?: FieldWithConfidence<string>;
   eFatura: FieldWithConfidence<boolean | null>;
   eArsiv: FieldWithConfidence<boolean | null>;
 

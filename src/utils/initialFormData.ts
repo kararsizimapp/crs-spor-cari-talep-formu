@@ -37,6 +37,7 @@ export function createEmptyFormData(settings: AppSettings = DEFAULT_SETTINGS): C
     telefon: { value: '', confidence: 'high' },
     faks: { value: '', confidence: 'high' },
     eposta: { value: '', confidence: 'high' },
+    adres: { value: '', confidence: 'high' },
     eFatura: { value: null, confidence: 'high' },
     eArsiv: { value: null, confidence: 'high' },
 

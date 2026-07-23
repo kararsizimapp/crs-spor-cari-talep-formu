@@ -40,12 +40,14 @@ GÖREVİN VE ÇOK KATI KURALLARIN:
    Yapıştırılan mesajlarda veya yüklenen belgelerde yer alan genel iletişim kişilerini, telefon ve e-posta adreslerini YALNIZCA "1. CARİ FİRMA BİLGİLERİ" (Firma Adı, Telefon, E-posta, Vergi No vb.) bölümüne ekle.
    "2. FİRMA YETKİLİLERİ" (sirketYetkilisiAd, sirketYetkilisiGsm, muhasebeYetkilisiAd, muhasebeYetkilisiGsm vb.) alanlarını ASLA genel iletişim bilgileriyle DOLDURMA.
    "FİRMA YETKİLİLERİ" alanları SADECE ve SADECE metinde "Şirket Yetkilisi", "Şirket Müdürü", "Genel Müdür", "Muhasebe Müdürü", "Satın Alma Yetkilisi" gibi unvanlar veya görevler açıkça ve doğrudan belirtilmişse doldurulmalıdır; aksi halde BOŞ ("") bırakılmalıdır.
-4. Çıkarılan her alan için 'confidence' (güven düzeyi) belirle:
+4. KATI KURAL - FİRMA AÇIK ADRESİ:
+   Gönderilen içerikte (metinde veya görselde) yer alan Mahalle, Cadde, Sokak, Bina No, İlçe, İl, Hastane/Birim veya Kurum adresi gibi tüm açık adres bilgilerini YALNIZCA ve EKSİKSİZ şekilde 'adres' (Firma Açık Adresi) alanına yaz.
+5. Çıkarılan her alan için 'confidence' (güven düzeyi) belirle:
    - 'high': Metinde tam ve net şekilde yazıyor.
    - 'medium': Kısmen net, imla hatası veya okunabilirlik şüphesi var.
    - 'low': Çok silik, karmaşık veya birden fazla çelişkili bilgi içeriyor.
-5. Bir alan için birden fazla ihtimal varsa (örneğin iki farklı IBAN veya iki farklı telefon), 'options' listesini doldur ve güven derecesini 'medium' yap.
-6. Biçimlendirme Kuralları:
+6. Bir alan için birden fazla ihtimal varsa (örneğin iki farklı IBAN veya iki farklı telefon), 'options' listesini doldur ve güven derecesini 'medium' yap.
+7. Biçimlendirme Kuralları:
    - Telefon: 05XX XXX XX XX veya 02XX XXX XX XX standardında.
    - IBAN: TR ile başlayan 26 karakterlik IBAN (TRXX XXXX XXXX XXXX XXXX XXXX XX).
    - Vergi/TCKN: 10 hane ise 'VKN', 11 hane ise 'TCKN'.
@@ -82,6 +84,7 @@ const extractionResponseSchema = {
     telefon: fieldSchema(Type.STRING, "Firma Sabit veya Cep Telefonu"),
     faks: fieldSchema(Type.STRING, "Faks Numarası"),
     eposta: fieldSchema(Type.STRING, "Firma E-posta Adresi"),
+    adres: fieldSchema(Type.STRING, "Firma Açık Adresi veya Tebligat Adresi"),
     eFatura: fieldSchema(Type.BOOLEAN, "E-Fatura mükellefi mi? True, False veya null"),
     eArsiv: fieldSchema(Type.BOOLEAN, "E-Arşiv mükellefi mi? True, False veya null"),
 

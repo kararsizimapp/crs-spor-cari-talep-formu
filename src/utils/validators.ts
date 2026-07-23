@@ -103,7 +103,7 @@ export function formatCurrencyTRY(val?: string): string {
   if (!digits) return '';
   const num = parseInt(digits, 10);
   if (isNaN(num)) return '';
-  return `${num.toLocaleString('tr-TR')} ₺`;
+  return `${num.toLocaleString('tr-TR')} TL`;
 }
 
 /**

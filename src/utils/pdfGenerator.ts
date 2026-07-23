@@ -52,8 +52,8 @@ function cleanText(str?: string | null, isFallbackFont = false): string {
   if (str === null || str === undefined) return '';
   let text = String(str).trim();
 
-  // Normalize Unicode
-  text = text.normalize('NFC');
+  // Normalize Unicode and replace Lira symbol with 'TL'
+  text = text.normalize('NFC').replace(/₺/g, 'TL');
 
   if (isFallbackFont) {
     return text
@@ -162,54 +162,67 @@ export async function generateCariFormPdf(formData: CariFormData, settings: AppS
   const headerHeight = 22;
   drawBox(marginX, currentY, contentWidth, headerHeight, '#F8FAFC', darkNavy);
 
-  // Top-Right Document Code
-  setPdfFont('bold');
-  doc.setFontSize(8);
-  doc.setTextColor(100, 116, 139);
-  const docCode = formData.dokumanKodu?.value || settings.dokumanKodu || 'Q İF';
-  doc.text(formatText(docCode), marginX + contentWidth - 14, currentY + 4.5);
-
   // Left Logo Box: CRS SPOR
   doc.setFillColor(15, 23, 42); // Navy
-  doc.rect(marginX + 2, currentY + 2, 34, 18, 'F');
+  doc.rect(marginX + 2, currentY + 2, 32, 18, 'F');
   doc.setTextColor(255, 255, 255);
   setPdfFont('bold');
   doc.setFontSize(11);
-  doc.text('CRS SPOR', marginX + 19, currentY + 12.5, { align: 'center' });
+  doc.text('CRS SPOR', marginX + 18, currentY + 12.5, { align: 'center' });
 
   // Center Title & Form Date
-  const centerCenterX = marginX + 36 + (132 - 36) / 2; // Exact center between logo and representative box (x = 94)
+  const centerCenterX = 84; // Center position
   doc.setTextColor(15, 23, 42);
   setPdfFont('bold');
-  doc.setFontSize(10);
+  doc.setFontSize(9.5);
   doc.text(formatText('TEDARİKÇİ / CARİ HESAP AÇMA TALEP FORMU'), centerCenterX, currentY + 9, { align: 'center' });
 
   // Form Date in Header Center
   setPdfFont('bold');
-  doc.setFontSize(8.5);
+  doc.setFontSize(8);
   doc.setTextColor(51, 65, 85); // Slate 700
   const formDateVal = formData.tarih?.value || new Date().toLocaleDateString('tr-TR');
   doc.text(formatText(`Form Tarihi: ${formDateVal}`), centerCenterX, currentY + 15.5, { align: 'center' });
 
-  // Right Box: TEMSİLCİ
-  const repBoxX = marginX + 132;
-  const repBoxY = currentY + 2.5;
-  const repBoxW = 54;
-  const repBoxH = 17;
+  // Box 3: TEMSİLCİ
+  const repBoxX = marginX + 114;
+  const repBoxY = currentY + 2;
+  const repBoxW = 34;
+  const repBoxH = 18;
 
   drawBox(repBoxX, repBoxY, repBoxW, repBoxH, '#FFFFFF', darkNavy);
   doc.setFillColor(30, 41, 59);
   doc.rect(repBoxX, repBoxY, repBoxW, 4.8, 'F');
   doc.setTextColor(255, 255, 255);
   setPdfFont('bold');
-  doc.setFontSize(7.5);
+  doc.setFontSize(7);
   doc.text(formatText('TEMSİLCİ'), repBoxX + repBoxW / 2, repBoxY + 3.6, { align: 'center' });
 
   doc.setTextColor(15, 23, 42);
   setPdfFont('bold');
-  doc.setFontSize(9.5);
+  doc.setFontSize(8.5);
   const repName = formData.temsilci?.value || settings.temsilci || '-';
-  doc.text(formatText(repName), repBoxX + repBoxW / 2, repBoxY + 12, { align: 'center' });
+  doc.text(formatText(repName), repBoxX + repBoxW / 2, repBoxY + 12.5, { align: 'center' });
+
+  // Box 4: ÇALIŞMA ŞEKLİ (DOKÜMAN KODU)
+  const codeBoxX = marginX + 150;
+  const codeBoxY = currentY + 2;
+  const codeBoxW = 36;
+  const codeBoxH = 18;
+
+  drawBox(codeBoxX, codeBoxY, codeBoxW, codeBoxH, '#FFFFFF', darkNavy);
+  doc.setFillColor(30, 41, 59);
+  doc.rect(codeBoxX, codeBoxY, codeBoxW, 4.8, 'F');
+  doc.setTextColor(255, 255, 255);
+  setPdfFont('bold');
+  doc.setFontSize(7);
+  doc.text(formatText('ÇALIŞMA ŞEKLİ'), codeBoxX + codeBoxW / 2, codeBoxY + 3.6, { align: 'center' });
+
+  doc.setTextColor(15, 23, 42);
+  setPdfFont('bold');
+  doc.setFontSize(11);
+  const docCode = formData.dokumanKodu?.value || settings.dokumanKodu || 'Q';
+  doc.text(formatText(docCode), codeBoxX + codeBoxW / 2, codeBoxY + 13, { align: 'center' });
 
   currentY += headerHeight + 3;
 
@@ -267,7 +280,21 @@ export async function generateCariFormPdf(formData: CariFormData, settings: AppS
   drawRowLabelVal(currentY, taxLabel, formData.vergiNo?.value, 'E-Posta', formData.eposta?.value);
   currentY += rowH;
 
-  // Row 4: E-Fatura Durumu & E-Arşiv Durumu with Modern Checkboxes
+  // Row 4: Firma Adresi
+  drawBox(marginX, currentY, col1W, rowH, '#F1F5F9');
+  doc.setTextColor(51, 65, 85);
+  setPdfFont('bold');
+  doc.setFontSize(7.5);
+  doc.text(formatText('Firma Adresi'), marginX + 2, currentY + 4);
+
+  drawBox(marginX + col1W, currentY, col2W + col3W + col4W, rowH, '#FFFFFF');
+  doc.setTextColor(15, 23, 42);
+  setPdfFont('normal');
+  doc.setFontSize(8);
+  doc.text(formatText(formData.adres?.value || '-'), marginX + col1W + 2, currentY + 4);
+  currentY += rowH;
+
+  // Row 5: E-Fatura Durumu & E-Arşiv Durumu with Modern Checkboxes
   drawBox(marginX, currentY, col1W, rowH, '#F1F5F9');
   doc.setTextColor(51, 65, 85);
   setPdfFont('bold');
@@ -276,7 +303,7 @@ export async function generateCariFormPdf(formData: CariFormData, settings: AppS
 
   drawBox(marginX + col1W, currentY, col2W, rowH, '#FFFFFF');
   drawCheckbox(marginX + col1W + 3, currentY + 1.25, formData.eFatura?.value === true, 'Evet');
-  drawCheckbox(marginX + col1W + 26, currentY + 1.25, formData.eFatura?.value === false, 'Hayır');
+  drawCheckbox(marginX + col1W + 26, currentY + 1.25, false, 'Hayır');
 
   drawBox(marginX + col1W + col2W, currentY, col3W, rowH, '#F1F5F9');
   doc.setTextColor(51, 65, 85);
@@ -286,7 +313,7 @@ export async function generateCariFormPdf(formData: CariFormData, settings: AppS
 
   drawBox(marginX + col1W + col2W + col3W, currentY, col4W, rowH, '#FFFFFF');
   drawCheckbox(marginX + col1W + col2W + col3W + 3, currentY + 1.25, formData.eArsiv?.value === true, 'Evet');
-  drawCheckbox(marginX + col1W + col2W + col3W + 26, currentY + 1.25, formData.eArsiv?.value === false, 'Hayır');
+  drawCheckbox(marginX + col1W + col2W + col3W + 26, currentY + 1.25, false, 'Hayır');
 
   currentY += rowH + 3;
 
@@ -388,12 +415,14 @@ export async function generateCariFormPdf(formData: CariFormData, settings: AppS
   currentY += rowH + 3;
 
   // -------------------------------------------------------------
-  // SECTION 4: ÖDEME ŞEKLİ
+  // SECTION 4: ÖDEME ŞEKLİ & CARİ LİMİT
   // -------------------------------------------------------------
   currentY = drawSectionHeader('ÖDEME ŞEKLİ', currentY);
 
-  const payBoxH = 13;
-  drawBox(marginX, currentY, contentWidth, payBoxH, '#FFFFFF');
+  const payRowH = 5.8;
+
+  // Row 1: Checkboxes
+  drawBox(marginX, currentY, contentWidth, payRowH, '#FFFFFF');
 
   const isVadeli = !!formData.vadeli?.value;
   const isPesin = !!formData.pesin?.value;
@@ -402,21 +431,50 @@ export async function generateCariFormPdf(formData: CariFormData, settings: AppS
 
   const vadeliLabel = `Vadeli Ödeme${isVadeli && formData.vadeGunu?.value ? ` (${formData.vadeGunu.value})` : ''}`;
 
-  // Row 1 Checkboxes
-  drawCheckbox(marginX + 4, currentY + 2.2, isVadeli, vadeliLabel);
-  drawCheckbox(marginX + 62, currentY + 2.2, isPesin, 'Peşin');
-  drawCheckbox(marginX + 98, currentY + 2.2, isKK, 'Kredi Kartı');
-  drawCheckbox(marginX + 138, currentY + 2.2, isCek, 'Çek / Senet');
+  drawCheckbox(marginX + 4, currentY + 1.25, isVadeli, vadeliLabel);
+  drawCheckbox(marginX + 62, currentY + 1.25, isPesin, 'Peşin');
+  drawCheckbox(marginX + 98, currentY + 1.25, isKK, 'Kredi Kartı');
+  drawCheckbox(marginX + 138, currentY + 1.25, isCek, 'Çek / Senet');
 
-  // Row 2 of Payment
+  currentY += payRowH;
+
+  // Row 2: İskonto Oranı & Cari Limit
+  const halfW = contentWidth / 2; // 95mm
+  const labelW = 28;
+  const valW = halfW - labelW; // 67mm
+
+  // Left side: İskonto Oranı
+  drawBox(marginX, currentY, labelW, payRowH, '#F1F5F9');
+  doc.setTextColor(51, 65, 85);
+  setPdfFont('bold');
+  doc.setFontSize(7.5);
+  doc.text(formatText('İskonto Oranı'), marginX + 2, currentY + 4);
+
+  drawBox(marginX + labelW, currentY, valW, payRowH, '#FFFFFF');
   doc.setTextColor(15, 23, 42);
   setPdfFont('normal');
   doc.setFontSize(8);
-  doc.text(formatText(`İskonto Oranı: ${formatIskontoOrani(formData.iskontoOrani?.value)}`), marginX + 4, currentY + 10);
-  setPdfFont('bold');
-  doc.text(formatText(`Cari Limit: ${formData.cariLimit?.value || '-'}`), marginX + 98, currentY + 10);
+  doc.text(formatText(formatIskontoOrani(formData.iskontoOrani?.value)), marginX + labelW + 2, currentY + 4);
 
-  currentY += payBoxH + 3;
+  // Right side: Cari Limit
+  let rawLimit = (formData.cariLimit?.value || '-').replace(/₺/g, 'TL').trim();
+  if (rawLimit !== '-' && !rawLimit.toUpperCase().includes('TL') && /^\d/.test(rawLimit)) {
+    rawLimit += ' TL';
+  }
+
+  drawBox(marginX + halfW, currentY, labelW, payRowH, '#F1F5F9');
+  doc.setTextColor(51, 65, 85);
+  setPdfFont('bold');
+  doc.setFontSize(7.5);
+  doc.text(formatText('Cari Limit'), marginX + halfW + 2, currentY + 4);
+
+  drawBox(marginX + halfW + labelW, currentY, valW, payRowH, '#FFFFFF');
+  doc.setTextColor(15, 23, 42);
+  setPdfFont('bold');
+  doc.setFontSize(8);
+  doc.text(formatText(rawLimit), marginX + halfW + labelW + 2, currentY + 4);
+
+  currentY += payRowH + 3;
 
   // -------------------------------------------------------------
   // SECTION 5: İSTENİLEN EVRAKLAR
