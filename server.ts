@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 function getGeminiClient() {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    throw new Error('GEMINI_API_KEY ortam değişkeni sistemde tanımlı değil.');
+    throw new Error('GEMINI_API_KEY ortam değişkeni bulunamadı. Lütfen Vercel veya sunucu panelinizin Environment Variables bölümünden GEMINI_API_KEY eklediğinizden emin olun.');
   }
   return new GoogleGenAI({
     apiKey,
@@ -251,4 +251,8 @@ async function startServer() {
   });
 }
 
-startServer();
+if (!process.env.VERCEL) {
+  startServer();
+}
+
+export default app;
