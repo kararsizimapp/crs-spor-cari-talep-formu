@@ -22,7 +22,7 @@ export const SourceViewer: React.FC<SourceViewerProps> = ({ sourceData }) => {
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
         <div className="flex items-center space-x-2">
-          <Eye className="w-4 h-4 text-sky-600" />
+          <Eye className="w-4 h-4 text-red-600" />
           <h3 className="text-sm font-bold text-slate-800">
             Kaynak Belge / Mesaj Ön İzleme
           </h3>

@@ -147,7 +147,7 @@ export async function generateCariFormPdf(formData: CariFormData, settings: AppS
 
   // Section Header Helper
   const drawSectionHeader = (title: string, y: number): number => {
-    doc.setFillColor(30, 41, 59); // Dark Navy
+    doc.setFillColor(153, 27, 27); // Modern Red (RGB 153, 27, 27)
     doc.rect(marginX, y, contentWidth, 6, 'F');
     doc.setTextColor(255, 255, 255);
     setPdfFont('bold');
@@ -163,7 +163,7 @@ export async function generateCariFormPdf(formData: CariFormData, settings: AppS
   drawBox(marginX, currentY, contentWidth, headerHeight, '#F8FAFC', darkNavy);
 
   // Left Logo Box: CRS SPOR
-  doc.setFillColor(15, 23, 42); // Navy
+  doc.setFillColor(185, 28, 28); // Red
   doc.rect(marginX + 2, currentY + 2, 32, 18, 'F');
   doc.setTextColor(255, 255, 255);
   setPdfFont('bold');
@@ -191,7 +191,7 @@ export async function generateCariFormPdf(formData: CariFormData, settings: AppS
   const repBoxH = 18;
 
   drawBox(repBoxX, repBoxY, repBoxW, repBoxH, '#FFFFFF', darkNavy);
-  doc.setFillColor(30, 41, 59);
+  doc.setFillColor(153, 27, 27);
   doc.rect(repBoxX, repBoxY, repBoxW, 4.8, 'F');
   doc.setTextColor(255, 255, 255);
   setPdfFont('bold');
@@ -211,7 +211,7 @@ export async function generateCariFormPdf(formData: CariFormData, settings: AppS
   const codeBoxH = 18;
 
   drawBox(codeBoxX, codeBoxY, codeBoxW, codeBoxH, '#FFFFFF', darkNavy);
-  doc.setFillColor(30, 41, 59);
+  doc.setFillColor(153, 27, 27);
   doc.rect(codeBoxX, codeBoxY, codeBoxW, 4.8, 'F');
   doc.setTextColor(255, 255, 255);
   setPdfFont('bold');

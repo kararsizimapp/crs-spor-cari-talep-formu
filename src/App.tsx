@@ -27,11 +27,11 @@ export default function App() {
         ) {
           parsed.temsilciler = DEFAULT_REPRESENTATIVES;
         }
-        if (!parsed.temsilci || parsed.temsilci === '7MUSTAFA' || !DEFAULT_REPRESENTATIVES.includes(parsed.temsilci)) {
-          parsed.temsilci = 'Mustafa Can';
+        if (parsed.temsilci === '7MUSTAFA' || parsed.temsilci === 'Mustafa Can' || (parsed.temsilci && !DEFAULT_REPRESENTATIVES.includes(parsed.temsilci))) {
+          parsed.temsilci = '';
         }
-        if (parsed.cariLimit === '50.000,00 TL' || parsed.cariLimit === '50.000 TL' || parsed.cariLimit === '0 TL') {
-          parsed.cariLimit = '';
+        if (!parsed.cariLimit || parsed.cariLimit === '50.000,00 TL' || parsed.cariLimit === '50.000 TL') {
+          parsed.cariLimit = '0 TL';
         }
         return { ...DEFAULT_SETTINGS, ...parsed };
       } catch (e) {
@@ -230,6 +230,7 @@ export default function App() {
         evraklar: { value: ['1- Vergi Levhası', '2- İmza Sirküsü'], confidence: 'high' },
 
         temsilci: raw.temsilci?.value ? raw.temsilci : { value: settings.temsilci, confidence: 'high' },
+        dokumanKodu: { value: settings.dokumanKodu || 'Q İF', confidence: 'high' },
         tarih: { value: formatDateTurkish(raw.tarih?.value), confidence: 'high' },
         kaseImzaVar: raw.kaseImzaVar || { value: false, confidence: 'high' },
         pazarlamaOnay: { value: false, confidence: 'high' },
@@ -337,7 +338,7 @@ export default function App() {
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-5 right-5 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-2 text-xs font-semibold animate-in fade-in slide-in-from-bottom-2">
-          <Check className="w-4 h-4 text-emerald-400" />
+          <Check className="w-4 h-4 text-red-400" />
           <span>{toastMessage}</span>
         </div>
       )}

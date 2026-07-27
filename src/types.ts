@@ -6,7 +6,7 @@ export interface AttachedFile {
   type: string;
   size: number;
   dataUrl: string;
-  category: 'Vergi Levhası' | 'İmza Sirküsü' | 'Ticaret Sicil Gazetesi' | 'Faaliyet Belgesi' | 'Diğer';
+  category: 'Vergi Levhası' | 'İmza Sirküsü' | 'Ticaret Sicil Gazetesi' | 'Faaliyet Belgesi' | 'Dekont' | 'Diğer';
   uploadedAt: string;
 }
 

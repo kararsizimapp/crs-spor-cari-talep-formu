@@ -42,7 +42,7 @@ export const HistoryDrawer: React.FC<HistoryDrawerProps> = ({
         {/* Header */}
         <div className="bg-slate-900 text-white p-4 flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center space-x-2">
-            <Clock className="w-5 h-5 text-sky-400" />
+            <Clock className="w-5 h-5 text-red-400" />
             <h3 className="font-bold text-base">Eski Cari Kayıtları</h3>
           </div>
           <button onClick={onClose} className="p-1 text-slate-400 hover:text-white rounded-lg">
@@ -59,7 +59,7 @@ export const HistoryDrawer: React.FC<HistoryDrawerProps> = ({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Firma adına göre ara..."
-              className="w-full text-xs pl-9 pr-3 py-2.5 bg-white rounded-xl border border-slate-200 focus:border-sky-500 outline-none"
+              className="w-full text-xs pl-9 pr-3 py-2.5 bg-white rounded-xl border border-slate-200 focus:border-red-500 outline-none"
             />
           </div>
         </div>
@@ -79,17 +79,17 @@ export const HistoryDrawer: React.FC<HistoryDrawerProps> = ({
                   onLoadRecord(rec);
                   onClose();
                 }}
-                className="bg-slate-50 hover:bg-sky-50/60 border border-slate-200 hover:border-sky-300 rounded-xl p-3 cursor-pointer transition-all flex items-start justify-between group"
+                className="bg-slate-50 hover:bg-red-50/60 border border-slate-200 hover:border-red-300 rounded-xl p-3 cursor-pointer transition-all flex items-start justify-between group"
               >
                 <div>
-                  <h4 className="text-xs font-bold text-slate-800 group-hover:text-sky-900">
+                  <h4 className="text-xs font-bold text-slate-800 group-hover:text-red-900">
                     {rec.firmaAdi || 'İsimsiz Firma'}
                   </h4>
                   <p className="text-[10px] text-slate-500 mt-0.5">
                     Tarih: {rec.formData.tarih?.value || rec.createdAt}
                   </p>
                   <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                    <span className="bg-sky-100 text-sky-800 text-[10px] font-semibold px-2 py-0.5 rounded">
+                    <span className="bg-red-100 text-red-800 text-[10px] font-semibold px-2 py-0.5 rounded">
                       {rec.sourceType === 'image' ? 'Görsel OCR' : rec.sourceType === 'pdf' ? 'PDF Belge' : 'Düz Metin'}
                     </span>
                     {rec.formData.vergiNo?.value && (
@@ -98,8 +98,8 @@ export const HistoryDrawer: React.FC<HistoryDrawerProps> = ({
                       </span>
                     )}
                     {rec.formData.attachedFiles?.value && rec.formData.attachedFiles.value.length > 0 && (
-                      <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
-                        <Paperclip className="w-3 h-3 text-emerald-600" />
+                      <span className="bg-rose-100 text-rose-800 text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
+                        <Paperclip className="w-3 h-3 text-rose-600" />
                         {rec.formData.attachedFiles.value.length} Ek Belge
                       </span>
                     )}
@@ -113,7 +113,7 @@ export const HistoryDrawer: React.FC<HistoryDrawerProps> = ({
                         e.stopPropagation();
                         downloadAllFilesZip(rec.formData.attachedFiles!.value, rec.firmaAdi || 'Cari');
                       }}
-                      className="p-1.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-800 rounded-lg transition-colors flex items-center gap-1"
+                      className="p-1.5 bg-rose-100 hover:bg-rose-200 text-rose-800 rounded-lg transition-colors flex items-center gap-1"
                       title="Tüm Ek Belgeleri ZIP Olarak İndir (Muhasebe)"
                     >
                       <Archive className="w-3.5 h-3.5" />
@@ -121,7 +121,7 @@ export const HistoryDrawer: React.FC<HistoryDrawerProps> = ({
                   )}
                   <button
                     onClick={(e) => handleDownload(rec, e)}
-                    className="p-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg transition-colors"
+                    className="p-1.5 bg-red-100 hover:bg-red-200 text-red-800 rounded-lg transition-colors"
                     title="PDF İndir"
                   >
                     <Download className="w-3.5 h-3.5" />

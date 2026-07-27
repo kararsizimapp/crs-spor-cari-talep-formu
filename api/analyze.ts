@@ -84,7 +84,7 @@ const extractionResponseSchema = {
 };
 
 export default async function handler(req: any, res: any) {
-  // Allow CORS
+  // CORS Headers
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -97,44 +97,60 @@ export default async function handler(req: any, res: any) {
     return res.status(200).end();
   }
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ success: false, error: 'Method Not Allowed' });
-  }
-
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      return res.status(400).json({
+    console.log("[/api/analyze] Function invoked, method:", req.method);
+
+    if (req.method !== 'POST') {
+      return res.status(405).json({
         success: false,
-        error: 'GEMINI_API_KEY Vercel ortam değişkenlerinde bulunamadı. Lütfen Vercel panelinizde Settings -> Environment Variables kısmından GEMINI_API_KEY değişkenini ekleyip projenizi yeniden yayınlayın (Redeploy).',
+        error: 'Yalnızca POST istekleri kabul edilir.',
       });
     }
 
-    const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+    console.log("[/api/analyze] Environment variable present:", Boolean(apiKey));
+
+    if (!apiKey) {
+      return res.status(400).json({
+        success: false,
+        error: 'Gemini API anahtarı sunucu ortamında tanımlı değil.',
+      });
+    }
+
+    let body: any = {};
+    try {
+      body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+    } catch (e) {
+      return res.status(400).json({
+        success: false,
+        error: 'Geçersiz JSON istek gövdesi.',
+      });
+    }
+
     const { imageBase64, mimeType, textContent } = body;
 
-    if (!imageBase64 && !textContent) {
+    if ((!imageBase64 || typeof imageBase64 !== 'string' || !imageBase64.trim()) &&
+        (!textContent || typeof textContent !== 'string' || !textContent.trim())) {
       return res.status(400).json({
         success: false,
         error: 'Analiz edilecek dosya, görsel veya metin bulunamadı.',
       });
     }
 
-    const ai = new GoogleGenAI({ apiKey });
-
     const contents: any[] = [];
 
-    if (textContent && textContent.trim()) {
+    if (textContent && typeof textContent === 'string' && textContent.trim()) {
       contents.push({
         text: `İncelenecek Yapıştırılan Metin / İletişim Notu:\n${textContent.trim()}`,
       });
     }
 
-    if (imageBase64 && mimeType) {
+    if (imageBase64 && typeof imageBase64 === 'string' && imageBase64.trim()) {
+      const cleanBase64 = imageBase64.replace(/^data:[^;]+;base64,/, '');
       contents.push({
         inlineData: {
-          mimeType,
-          data: imageBase64,
+          mimeType: mimeType || 'image/jpeg',
+          data: cleanBase64,
         },
       });
       contents.push({
@@ -142,60 +158,129 @@ export default async function handler(req: any, res: any) {
       });
     }
 
-    let response: any = null;
-    let lastError: any = null;
+    const ai = new GoogleGenAI({ apiKey });
 
-    const candidateModels = [
-      'gemini-2.0-flash',
-      'gemini-1.5-flash',
-    ];
+    let responseText: string | null = null;
+    let primaryError: any = null;
 
-    for (const modelName of candidateModels) {
-      try {
-        console.log(`Gemini analizi başlatılıyor (${modelName})...`);
-        const result = await ai.models.generateContent({
-          model: modelName,
-          contents,
-          config: {
-            systemInstruction: EXTRACTION_SYSTEM_INSTRUCTION,
-            responseMimeType: 'application/json',
-            responseSchema: extractionResponseSchema,
-            temperature: 0.1,
-          },
-        });
+    console.log("[/api/analyze] Using model: gemini-3.6-flash");
+    try {
+      const result = await ai.models.generateContent({
+        model: 'gemini-3.6-flash',
+        contents,
+        config: {
+          systemInstruction: EXTRACTION_SYSTEM_INSTRUCTION,
+          responseMimeType: 'application/json',
+          responseSchema: extractionResponseSchema,
+          temperature: 0.1,
+        },
+      });
+      if (result && result.text) {
+        responseText = result.text;
+      }
+    } catch (err: any) {
+      primaryError = err;
+      const statusCode = err?.status || err?.statusCode;
+      console.error("[/api/analyze] Primary model (gemini-3.6-flash) failed:", {
+        statusCode,
+        message: err?.message,
+        stack: err?.stack,
+      });
 
-        if (result && result.text) {
-          response = result;
-          console.log(`Gemini analizi tamamlandı (${modelName})`);
-          break;
+      const isAuthOrKeyError =
+        statusCode === 401 ||
+        statusCode === 403 ||
+        (err?.message && (
+          err.message.includes('API_KEY_INVALID') ||
+          err.message.includes('API key not valid') ||
+          err.message.includes('UNAUTHENTICATED') ||
+          err.message.includes('PERMISSION_DENIED')
+        ));
+
+      if (!isAuthOrKeyError) {
+        console.log("[/api/analyze] Attempting fallback model: gemini-2.5-flash");
+        try {
+          const fallbackResult = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents,
+            config: {
+              systemInstruction: EXTRACTION_SYSTEM_INSTRUCTION,
+              responseMimeType: 'application/json',
+              responseSchema: extractionResponseSchema,
+              temperature: 0.1,
+            },
+          });
+          if (fallbackResult && fallbackResult.text) {
+            responseText = fallbackResult.text;
+          }
+        } catch (fallbackErr: any) {
+          console.error("[/api/analyze] Fallback model (gemini-2.5-flash) failed:", {
+            statusCode: fallbackErr?.status || fallbackErr?.statusCode,
+            message: fallbackErr?.message,
+            stack: fallbackErr?.stack,
+          });
         }
-      } catch (err: any) {
-        console.warn(`Model ${modelName} başarısız oldu:`, err?.message || err);
-        lastError = err;
       }
     }
 
-    if (!response || !response.text) {
-      return res.status(500).json({
+    if (!responseText) {
+      const errToReport = primaryError || new Error("Yapay zeka analiz servisinden yanıt alınamadı.");
+      const errMessage = errToReport?.message || "";
+      const errStatus = errToReport?.status || errToReport?.statusCode;
+
+      let httpCode = 500;
+      let userFriendlyError = "Yapay zeka analizi sırasında sunucuda bir hata oluştu.";
+
+      if (errStatus === 401 || errStatus === 403 || errMessage.includes('401') || errMessage.includes('403') || errMessage.includes('API key') || errMessage.includes('UNAUTHENTICATED') || errMessage.includes('PERMISSION_DENIED')) {
+        httpCode = 401;
+        userFriendlyError = "Gemini API anahtarı geçersiz veya yetkisiz. Lütfen Vercel panelinizden API anahtarınızı kontrol edin.";
+      } else if (errStatus === 429 || errMessage.includes('429') || errMessage.includes('RESOURCE_EXHAUSTED') || errMessage.includes('quota')) {
+        httpCode = 429;
+        userFriendlyError = "Gemini API kota sınırı aşıldı veya çok fazla istek yapıldı. Lütfen biraz bekleyip tekrar deneyin.";
+      } else if (errStatus === 400 || errMessage.includes('400') || errMessage.includes('INVALID_ARGUMENT')) {
+        httpCode = 400;
+        userFriendlyError = "Gönderilen veri veya dosya formatı yapay zeka servisi tarafından işlenemedi.";
+      } else if (errStatus === 502 || errStatus === 503 || errMessage.includes('502') || errMessage.includes('503') || errMessage.includes('UNAVAILABLE')) {
+        httpCode = 503;
+        userFriendlyError = "Gemini yapay zeka servisine erişilemiyor. Lütfen kısa bir süre sonra tekrar deneyiniz.";
+      }
+
+      return res.status(httpCode).json({
         success: false,
-        error: lastError?.message || 'Yapay zeka analiz servisinden yanıt alınamadı.',
+        error: userFriendlyError,
       });
     }
 
-    const rawText = response.text.trim();
-    const cleanJsonText = rawText.replace(/^```(json)?\s*/i, '').replace(/\s*```$/i, '').trim();
-    const extractedData = JSON.parse(cleanJsonText);
+    let extractedData: any = null;
+    let cleanJsonText = "";
+    try {
+      const rawText = responseText.trim();
+      cleanJsonText = rawText.replace(/^```(json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+      extractedData = JSON.parse(cleanJsonText);
+    } catch (parseErr: any) {
+      console.error("[/api/analyze] JSON parse error:", {
+        message: parseErr?.message,
+        stack: parseErr?.stack,
+      });
+      return res.status(500).json({
+        success: false,
+        error: "Yapay zeka çıktısı geçerli bir JSON formatında alınamadı. Lütfen tekrar deneyiniz.",
+      });
+    }
 
     return res.status(200).json({
       success: true,
       data: extractedData,
       rawExtractedText: cleanJsonText,
     });
-  } catch (err: any) {
-    console.error('API Analyze Error:', err);
+  } catch (globalErr: any) {
+    console.error("[/api/analyze] Uncaught Exception in handler:", {
+      message: globalErr?.message,
+      stack: globalErr?.stack,
+    });
     return res.status(500).json({
       success: false,
-      error: err?.message || 'Sunucuda bir analiz hatası oluştu.',
+      error: "Sunucuda beklenmeyen bir analiz hatası oluştu. Lütfen tekrar deneyiniz.",
     });
   }
 }

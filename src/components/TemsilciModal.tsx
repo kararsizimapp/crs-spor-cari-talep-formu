@@ -102,7 +102,7 @@ export const TemsilciModal: React.FC<TemsilciModalProps> = ({
         {/* Header */}
         <div className="bg-slate-900 text-white px-5 py-4 flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center space-x-2.5">
-            <div className="bg-sky-500/20 p-2 rounded-lg border border-sky-500/30 text-sky-400">
+            <div className="bg-red-500/20 p-2 rounded-lg border border-red-500/30 text-red-400">
               <UserCheck className="w-5 h-5" />
             </div>
             <div>
@@ -121,22 +121,22 @@ export const TemsilciModal: React.FC<TemsilciModalProps> = ({
         {/* Modal Body */}
         <div className="p-5 space-y-5">
           {/* Currently Active Representative */}
-          <div className="bg-sky-50 border border-sky-200 rounded-xl p-3.5 flex items-center justify-between">
+          <div className="bg-red-50 border border-red-200 rounded-xl p-3.5 flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-sky-600 text-white rounded-xl flex items-center justify-center font-bold text-sm shadow-sm">
+              <div className="w-10 h-10 bg-red-600 text-white rounded-xl flex items-center justify-center font-bold text-sm shadow-sm">
                 <User className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-[10px] font-bold text-sky-800 tracking-wider uppercase block">
+                <span className="text-[10px] font-bold text-red-800 tracking-wider uppercase block">
                   Seçili Temsilci
                 </span>
                 <span className="text-sm font-extrabold text-slate-900">
-                  {settings.temsilci || 'Mustafa Can'}
+                  {settings.temsilci || 'Seçilmedi (Lütfen Seçiniz)'}
                 </span>
               </div>
             </div>
-            <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
-              <Check className="w-3 h-3 text-emerald-600" /> Aktif
+            <span className="bg-rose-100 text-rose-800 border border-rose-300 text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+              <Check className="w-3 h-3 text-rose-600" /> Aktif
             </span>
           </div>
 
@@ -167,7 +167,7 @@ export const TemsilciModal: React.FC<TemsilciModalProps> = ({
                       <button
                         type="button"
                         onClick={(e) => saveEdit(index, e)}
-                        className="bg-emerald-600 hover:bg-emerald-500 text-white p-1.5 rounded-lg shadow-sm"
+                        className="bg-red-600 hover:bg-red-500 text-white p-1.5 rounded-lg shadow-sm"
                         title="Kaydet"
                       >
                         <Save className="w-4 h-4" />
@@ -191,17 +191,17 @@ export const TemsilciModal: React.FC<TemsilciModalProps> = ({
                     className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left cursor-pointer transition-all ${
                       isActive
                         ? 'bg-slate-900 text-white border-slate-900 shadow-md font-bold'
-                        : 'bg-slate-50 hover:bg-sky-50/80 text-slate-800 border-slate-200 hover:border-sky-300 font-medium'
+                        : 'bg-slate-50 hover:bg-red-50/80 text-slate-800 border-slate-200 hover:border-red-300 font-medium'
                     }`}
                   >
                     <div className="flex items-center space-x-2.5 flex-1 min-w-0 pr-2">
-                      <Shield className={`w-4 h-4 shrink-0 ${isActive ? 'text-sky-400' : 'text-slate-400'}`} />
+                      <Shield className={`w-4 h-4 shrink-0 ${isActive ? 'text-red-400' : 'text-slate-400'}`} />
                       <span className="text-xs font-bold truncate">{name}</span>
                     </div>
 
                     <div className="flex items-center space-x-1 shrink-0" onClick={(e) => e.stopPropagation()}>
                       {isActive && (
-                        <span className="text-[10px] bg-sky-500 text-white px-2 py-0.5 rounded-full font-bold mr-1">
+                        <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded-full font-bold mr-1">
                           Seçili
                         </span>
                       )}
@@ -212,7 +212,7 @@ export const TemsilciModal: React.FC<TemsilciModalProps> = ({
                         className={`p-1.5 rounded-lg transition-colors ${
                           isActive
                             ? 'text-slate-300 hover:text-white hover:bg-slate-800'
-                            : 'text-slate-400 hover:text-sky-600 hover:bg-sky-100'
+                            : 'text-slate-400 hover:text-red-600 hover:bg-red-100'
                         }`}
                         title="Temsilci Adını Düzenle"
                       >
@@ -249,12 +249,12 @@ export const TemsilciModal: React.FC<TemsilciModalProps> = ({
                 value={newTemsilciName}
                 onChange={(e) => setNewTemsilciName(e.target.value)}
                 placeholder="Örn: Mustafa Can"
-                className="flex-1 text-xs p-2.5 rounded-xl border border-slate-300 focus:border-sky-500 font-bold outline-none"
+                className="flex-1 text-xs p-2.5 rounded-xl border border-slate-300 focus:border-red-500 font-bold outline-none"
               />
               <button
                 type="submit"
                 disabled={!newTemsilciName.trim()}
-                className="bg-sky-600 hover:bg-sky-500 disabled:opacity-50 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center space-x-1 transition-all shadow-sm shrink-0"
+                className="bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center space-x-1 transition-all shadow-sm shrink-0"
               >
                 <Plus className="w-4 h-4" />
                 <span>Ekle</span>

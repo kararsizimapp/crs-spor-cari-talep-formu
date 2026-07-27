@@ -19,9 +19,9 @@ app.get(['/api/health', '/health'], (req, res) => {
 
 // Lazy Gemini AI initialization helper
 function getGeminiClient() {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
   if (!apiKey) {
-    throw new Error('GEMINI_API_KEY ortam değişkeni bulunamadı. Lütfen Vercel panelinizden (Settings -> Environment Variables) GEMINI_API_KEY değişkenini eklediğinizden ve Redeploy yaptığınızdan emin olun.');
+    return null;
   }
   return new GoogleGenAI({
     apiKey,
@@ -120,97 +120,164 @@ const extractionResponseSchema = {
 // API Endpoint: Analyze Uploaded Document or Text via Gemini
 app.post(['/api/analyze', '/analyze'], async (req, res) => {
   try {
-    const { imageBase64, mimeType, textContent } = req.body;
-
-    if (!imageBase64 && !textContent) {
-      return res.status(400).json({
-        success: false,
-        error: 'Lütfen bir görsel, PDF belgesi yükleyin veya metin yapıştırın.',
-      });
-    }
-
+    console.log("[/api/analyze] Express handler invoked");
     const ai = getGeminiClient();
-
-    let contentsPayload: any;
-
-    if (imageBase64 && mimeType) {
-      // Clean base64 string prefix if included
-      const cleanBase64 = imageBase64.replace(/^data:[^;]+;base64,/, '');
-      contentsPayload = [
-        {
-          inlineData: {
-            mimeType: mimeType || 'image/png',
-            data: cleanBase64,
-          },
-        },
-        {
-          text: 'Lütfen bu görseldeki/belgedeki cari ve firma bilgilerini okuyup yapılandırılmış JSON olarak çıkart.',
-        },
-      ];
-    } else if (textContent) {
-      contentsPayload = [
-        `Aşağıdaki mesaj metnini analiz ederek cari ve firma bilgilerini yapılandırılmış JSON olarak çıkart:\n\n${textContent}`,
-      ];
-    } else {
+    if (!ai) {
       return res.status(400).json({
         success: false,
-        error: 'Geçersiz veri formatı. Belge veya metin bulunamadı.',
+        error: 'Gemini API anahtarı sunucu ortamında tanımlı değil.',
       });
     }
 
-    let response: any = null;
-    let lastError: any = null;
+    const { imageBase64, mimeType, textContent } = req.body || {};
 
-    const candidateModels = [
-      'gemini-2.5-flash',
-      'gemini-2.0-flash',
-      'gemini-1.5-flash',
-    ];
+    if ((!imageBase64 || typeof imageBase64 !== 'string' || !imageBase64.trim()) &&
+        (!textContent || typeof textContent !== 'string' || !textContent.trim())) {
+      return res.status(400).json({
+        success: false,
+        error: 'Analiz edilecek dosya, görsel veya metin bulunamadı.',
+      });
+    }
 
-    for (const modelName of candidateModels) {
-      try {
-        response = await ai.models.generateContent({
-          model: modelName,
-          contents: contentsPayload,
-          config: {
-            systemInstruction: EXTRACTION_SYSTEM_INSTRUCTION,
-            responseMimeType: 'application/json',
-            responseSchema: extractionResponseSchema,
-            temperature: 0.1,
-          },
-        });
-        if (response && response.text) {
-          console.log(`Successfully generated content using model: ${modelName}`);
-          break;
+    const contents: any[] = [];
+
+    if (textContent && typeof textContent === 'string' && textContent.trim()) {
+      contents.push({
+        text: `İncelenecek Yapıştırılan Metin / İletişim Notu:\n${textContent.trim()}`,
+      });
+    }
+
+    if (imageBase64 && typeof imageBase64 === 'string' && imageBase64.trim()) {
+      const cleanBase64 = imageBase64.replace(/^data:[^;]+;base64,/, '');
+      contents.push({
+        inlineData: {
+          mimeType: mimeType || 'image/jpeg',
+          data: cleanBase64,
+        },
+      });
+      contents.push({
+        text: 'Lütfen yukarıdaki görseldeki/belgedeki cari ve firma bilgilerini okuyup çıkarın.',
+      });
+    }
+
+    let responseText: string | null = null;
+    let primaryError: any = null;
+
+    console.log("[/api/analyze] Using model: gemini-3.6-flash");
+    try {
+      const result = await ai.models.generateContent({
+        model: 'gemini-3.6-flash',
+        contents,
+        config: {
+          systemInstruction: EXTRACTION_SYSTEM_INSTRUCTION,
+          responseMimeType: 'application/json',
+          responseSchema: extractionResponseSchema,
+          temperature: 0.1,
+        },
+      });
+      if (result && result.text) {
+        responseText = result.text;
+      }
+    } catch (err: any) {
+      primaryError = err;
+      const statusCode = err?.status || err?.statusCode;
+      console.error("[/api/analyze] Gemini 3.6 Flash call failed:", {
+        statusCode,
+        message: err?.message,
+        stack: err?.stack,
+      });
+
+      const isAuthOrKeyError =
+        statusCode === 401 ||
+        statusCode === 403 ||
+        (err?.message && (
+          err.message.includes('API_KEY_INVALID') ||
+          err.message.includes('API key not valid') ||
+          err.message.includes('UNAUTHENTICATED') ||
+          err.message.includes('PERMISSION_DENIED')
+        ));
+
+      if (!isAuthOrKeyError) {
+        console.log("[/api/analyze] Attempting fallback model: gemini-2.5-flash");
+        try {
+          const fallbackResult = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents,
+            config: {
+              systemInstruction: EXTRACTION_SYSTEM_INSTRUCTION,
+              responseMimeType: 'application/json',
+              responseSchema: extractionResponseSchema,
+              temperature: 0.1,
+            },
+          });
+          if (fallbackResult && fallbackResult.text) {
+            responseText = fallbackResult.text;
+          }
+        } catch (fallbackErr: any) {
+          console.error("[/api/analyze] Gemini 2.5 Flash fallback call failed:", {
+            statusCode: fallbackErr?.status || fallbackErr?.statusCode,
+            message: fallbackErr?.message,
+            stack: fallbackErr?.stack,
+          });
         }
-      } catch (modelErr: any) {
-        console.warn(`Model ${modelName} failed:`, modelErr?.message || modelErr);
-        lastError = modelErr;
       }
     }
 
-    if (!response || !response.text) {
-      throw lastError || new Error('Yapay zeka analiz servisinden yanıt alınamadı.');
+    if (!responseText) {
+      const errToReport = primaryError || new Error("Yapay zeka analiz servisinden yanıt alınamadı.");
+      const errMessage = errToReport?.message || "";
+      const errStatus = errToReport?.status || errToReport?.statusCode;
+
+      let httpCode = 500;
+      let userFriendlyError = "Yapay zeka analizi sırasında sunucuda bir hata oluştu.";
+
+      if (errStatus === 401 || errStatus === 403 || errMessage.includes('401') || errMessage.includes('403') || errMessage.includes('API key') || errMessage.includes('UNAUTHENTICATED') || errMessage.includes('PERMISSION_DENIED')) {
+        httpCode = 401;
+        userFriendlyError = "Gemini API anahtarı geçersiz veya yetkisiz. Lütfen Vercel panelinizden API anahtarınızı kontrol edin.";
+      } else if (errStatus === 429 || errMessage.includes('429') || errMessage.includes('RESOURCE_EXHAUSTED') || errMessage.includes('quota')) {
+        httpCode = 429;
+        userFriendlyError = "Gemini API kota sınırı aşıldı veya çok fazla istek yapıldı. Lütfen biraz bekleyip tekrar deneyin.";
+      } else if (errStatus === 400 || errMessage.includes('400') || errMessage.includes('INVALID_ARGUMENT')) {
+        httpCode = 400;
+        userFriendlyError = "Gönderilen veri veya dosya formatı yapay zeka servisi tarafından işlenemedi.";
+      } else if (errStatus === 502 || errStatus === 503 || errMessage.includes('502') || errMessage.includes('503') || errMessage.includes('UNAVAILABLE')) {
+        httpCode = 503;
+        userFriendlyError = "Gemini yapay zeka servisine erişilemiyor. Lütfen kısa bir süre sonra tekrar deneyiniz.";
+      }
+
+      return res.status(httpCode).json({
+        success: false,
+        error: userFriendlyError,
+      });
     }
 
-    const rawText = response.text.trim();
-    const cleanJsonText = rawText.replace(/^```(json)?\s*/i, '').replace(/\s*```$/i, '').trim();
-    let extractedData = JSON.parse(cleanJsonText);
+    let extractedData: any = null;
+    let cleanJsonText = "";
+    try {
+      const rawText = responseText.trim();
+      cleanJsonText = rawText.replace(/^```(json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+      extractedData = JSON.parse(cleanJsonText);
+    } catch (parseErr: any) {
+      console.error("[/api/analyze] JSON parse error:", {
+        message: parseErr?.message,
+        stack: parseErr?.stack,
+      });
+      return res.status(500).json({
+        success: false,
+        error: "Yapay zeka çıktısı geçerli bir JSON formatında alınamadı. Lütfen tekrar deneyiniz.",
+      });
+    }
 
-    return res.json({
+    return res.status(200).json({
       success: true,
       data: extractedData,
       rawExtractedText: cleanJsonText,
     });
   } catch (err: any) {
     console.error('Gemini Analysis Error:', err);
-    let errMsg = err?.message || 'Görsel veya metin analiz edilirken bir hata oluştu.';
-    if (typeof errMsg === 'string' && (errMsg.includes('The page c') || errMsg.includes('<!DOCTYPE') || errMsg.includes('<html>'))) {
-      errMsg = 'Yapay zeka servisine bağlanırken sunucu erişim hatası oluştu. Lütfen birkaç saniye sonra tekrar deneyin.';
-    }
     return res.status(500).json({
       success: false,
-      error: errMsg,
+      error: err?.message || 'Sunucuda beklenmeyen bir analiz hatası oluştu.',
     });
   }
 });

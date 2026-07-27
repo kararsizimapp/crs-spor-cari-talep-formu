@@ -93,7 +93,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
 
     const filesArray = Array.from(files);
 
-    filesArray.forEach((file) => {
+    filesArray.forEach((file: File) => {
       const reader = new FileReader();
       reader.onload = (event) => {
         const dataUrl = event.target?.result as string;
@@ -134,7 +134,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-3">
         <div>
           <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-sky-600" />
+            <Building2 className="w-5 h-5 text-red-600" />
             2. Cari Hesap Açma Talep Formu Ön İzleme
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -149,7 +149,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
       <div className="bg-slate-50/80 rounded-xl border border-slate-200/80 p-4 space-y-4">
         <div className="flex items-center justify-between pb-2 border-b border-slate-200">
           <h3 className="text-xs font-bold text-slate-800 tracking-wider flex items-center gap-2">
-            <Building2 className="w-4 h-4 text-sky-600" />
+            <Building2 className="w-4 h-4 text-red-600" />
             1. CARİ FİRMA BİLGİLERİ
           </h3>
         </div>
@@ -165,7 +165,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               value={formData.firmaAdi?.value || ''}
               onChange={(e) => updateField('firmaAdi', e.target.value)}
               placeholder="Örn: ABC Spor Malzemeleri A.Ş."
-              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none transition-all"
+              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none transition-all"
             />
             {formData.firmaAdi?.options && formData.firmaAdi.options.length > 0 && (
               <div className="mt-1.5 flex flex-wrap gap-1 items-center">
@@ -194,7 +194,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               value={formData.vergiDairesi?.value || ''}
               onChange={(e) => updateField('vergiDairesi', e.target.value)}
               placeholder="Örn: Kadıköy"
-              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-sky-500 outline-none"
+              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-red-500 outline-none"
             />
           </div>
 
@@ -212,7 +212,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                     formData.vergiNoTuru?.value === 'TCKN' ? 'VKN' : 'TCKN'
                   )
                 }
-                className="text-[11px] text-sky-600 underline font-medium"
+                className="text-[11px] text-red-600 underline font-medium"
               >
                 Tür Değiştir ({formData.vergiNoTuru?.value || 'VKN'})
               </button>
@@ -225,7 +225,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               className={`w-full text-sm px-3 py-2 rounded-lg border outline-none ${
                 !taxValidation.isValid
                   ? 'border-red-400 bg-red-50/50 text-red-900'
-                  : 'border-slate-300 focus:border-sky-500'
+                  : 'border-slate-300 focus:border-red-500'
               }`}
             />
             {!taxValidation.isValid && taxValidation.warning && (
@@ -246,7 +246,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               className={`w-full text-sm px-3 py-2 rounded-lg border outline-none ${
                 !phoneValidation.isValid
                   ? 'border-red-400 bg-red-50/50'
-                  : 'border-slate-300 focus:border-sky-500'
+                  : 'border-slate-300 focus:border-red-500'
               }`}
             />
             {!phoneValidation.isValid && phoneValidation.warning && (
@@ -264,7 +264,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               value={formData.faks?.value || ''}
               onChange={(e) => updateField('faks', e.target.value)}
               placeholder="0216 000 00 00"
-              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-sky-500 outline-none"
+              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-red-500 outline-none"
             />
           </div>
 
@@ -281,7 +281,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               className={`w-full text-sm px-3 py-2 rounded-lg border outline-none ${
                 !emailValidation.isValid
                   ? 'border-red-400 bg-red-50/50 text-red-900'
-                  : 'border-slate-300 focus:border-sky-500'
+                  : 'border-slate-300 focus:border-red-500'
               }`}
             />
             {!emailValidation.isValid && emailValidation.warning && (
@@ -299,7 +299,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               value={formData.adres?.value || ''}
               onChange={(e) => updateField('adres', e.target.value)}
               placeholder="Örn: Esentepe Mah. Şehitler Cd. No:20 Merkez/Bolu İzzet Baysal Devlet Hastanesi Özlük Birimi"
-              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 outline-none transition-all resize-y min-h-[64px]"
+              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none transition-all resize-y min-h-[64px]"
             />
             {formData.adres?.options && formData.adres.options.length > 0 && (
               <div className="mt-1.5 flex flex-wrap gap-1 items-center">
@@ -325,7 +325,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 type="checkbox"
                 checked={formData.eFatura?.value === true}
                 onChange={(e) => updateField('eFatura', e.target.checked)}
-                className="w-4 h-4 text-sky-600 rounded focus:ring-sky-500"
+                className="w-4 h-4 text-red-600 rounded focus:ring-red-500 accent-red-600"
               />
               <span>E-Fatura Mükellefi</span>
             </label>
@@ -335,7 +335,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 type="checkbox"
                 checked={formData.eArsiv?.value === true}
                 onChange={(e) => updateField('eArsiv', e.target.checked)}
-                className="w-4 h-4 text-sky-600 rounded focus:ring-sky-500"
+                className="w-4 h-4 text-red-600 rounded focus:ring-red-500 accent-red-600"
               />
               <span>E-Arşiv Mükellefi</span>
             </label>
@@ -349,7 +349,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
       <div className="bg-slate-50/80 rounded-xl border border-slate-200/80 p-4 space-y-4">
         <div className="flex items-center justify-between pb-2 border-b border-slate-200">
           <h3 className="text-xs font-bold text-slate-800 tracking-wider flex items-center gap-2">
-            <Users className="w-4 h-4 text-sky-600" />
+            <Users className="w-4 h-4 text-red-600" />
             2. FİRMA YETKİLİLERİ
           </h3>
         </div>
@@ -357,7 +357,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Şirket Yetkilisi */}
           <div className="p-3 bg-white rounded-lg border border-slate-200 space-y-3">
-            <h4 className="text-xs font-bold text-slate-700 uppercase border-b pb-1 text-sky-700">
+            <h4 className="text-xs font-bold text-slate-700 uppercase border-b pb-1 text-red-700">
               ŞİRKET YETKİLİSİ
             </h4>
             <div>
@@ -367,7 +367,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 value={formData.sirketYetkilisiAd?.value || ''}
                 onChange={(e) => updateField('sirketYetkilisiAd', e.target.value)}
                 placeholder="Örn: Ahmet Yılmaz"
-                className="w-full text-xs p-2 rounded border border-slate-300 outline-none focus:border-sky-500"
+                className="w-full text-xs p-2 rounded border border-slate-300 outline-none focus:border-red-500"
               />
             </div>
             <div>
@@ -377,7 +377,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 value={formData.sirketYetkilisiGsm?.value || ''}
                 onChange={(e) => updateField('sirketYetkilisiGsm', e.target.value)}
                 placeholder="0532 000 00 00"
-                className="w-full text-xs p-2 rounded border border-slate-300 outline-none focus:border-sky-500"
+                className="w-full text-xs p-2 rounded border border-slate-300 outline-none focus:border-red-500"
               />
             </div>
             <div>
@@ -387,14 +387,14 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 value={formData.sirketYetkilisiEposta?.value || ''}
                 onChange={(e) => updateField('sirketYetkilisiEposta', e.target.value)}
                 placeholder="ahmet@firma.com"
-                className="w-full text-xs p-2 rounded border border-slate-300 outline-none focus:border-sky-500"
+                className="w-full text-xs p-2 rounded border border-slate-300 outline-none focus:border-red-500"
               />
             </div>
           </div>
 
           {/* Muhasebe / Satın Alma Yetkilisi */}
           <div className="p-3 bg-white rounded-lg border border-slate-200 space-y-3">
-            <h4 className="text-xs font-bold text-slate-700 border-b pb-1 text-sky-700">
+            <h4 className="text-xs font-bold text-slate-700 border-b pb-1 text-red-700">
               MUHASEBE VEYA SATIN ALMA YETKİLİSİ
             </h4>
             <div>
@@ -404,7 +404,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 value={formData.muhasebeYetkilisiAd?.value || ''}
                 onChange={(e) => updateField('muhasebeYetkilisiAd', e.target.value)}
                 placeholder="Örn: Mehmet Demir"
-                className="w-full text-xs p-2 rounded border border-slate-300 outline-none focus:border-sky-500"
+                className="w-full text-xs p-2 rounded border border-slate-300 outline-none focus:border-red-500"
               />
             </div>
             <div>
@@ -414,7 +414,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 value={formData.muhasebeYetkilisiGsm?.value || ''}
                 onChange={(e) => updateField('muhasebeYetkilisiGsm', e.target.value)}
                 placeholder="0533 000 00 00"
-                className="w-full text-xs p-2 rounded border border-slate-300 outline-none focus:border-sky-500"
+                className="w-full text-xs p-2 rounded border border-slate-300 outline-none focus:border-red-500"
               />
             </div>
             <div>
@@ -424,7 +424,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 value={formData.muhasebeYetkilisiEposta?.value || ''}
                 onChange={(e) => updateField('muhasebeYetkilisiEposta', e.target.value)}
                 placeholder="muhasebe@firma.com"
-                className="w-full text-xs p-2 rounded border border-slate-300 outline-none focus:border-sky-500"
+                className="w-full text-xs p-2 rounded border border-slate-300 outline-none focus:border-red-500"
               />
             </div>
           </div>
@@ -437,7 +437,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
       <div className="bg-slate-50/80 rounded-xl border border-slate-200/80 p-4 space-y-4">
         <div className="flex items-center justify-between pb-2 border-b border-slate-200">
           <h3 className="text-xs font-bold text-slate-800 tracking-wider flex items-center gap-2">
-            <CreditCard className="w-4 h-4 text-sky-600" />
+            <CreditCard className="w-4 h-4 text-red-600" />
             3. BANKA BİLGİLERİ
           </h3>
         </div>
@@ -450,7 +450,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               value={formData.bankaAdi?.value || ''}
               onChange={(e) => updateField('bankaAdi', e.target.value)}
               placeholder="Örn: Ziraat Bankası, Garanti BBVA"
-              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-sky-500 outline-none"
+              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-red-500 outline-none"
             />
           </div>
 
@@ -461,7 +461,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               value={formData.subeAdi?.value || ''}
               onChange={(e) => updateField('subeAdi', e.target.value)}
               placeholder="Örn: Kadıköy Şubesi / 123"
-              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-sky-500 outline-none"
+              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-red-500 outline-none"
             />
           </div>
 
@@ -477,7 +477,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               className={`w-full text-sm font-mono px-3 py-2 rounded-lg border outline-none ${
                 !ibanValidation.isValid
                   ? 'border-red-400 bg-red-50/50 text-red-900'
-                  : 'border-slate-300 focus:border-sky-500'
+                  : 'border-slate-300 focus:border-red-500'
               }`}
             />
             {!ibanValidation.isValid && ibanValidation.warning && (
@@ -508,7 +508,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
       <div className="bg-slate-50/80 rounded-xl border border-slate-200/80 p-4 space-y-4">
         <div className="flex items-center justify-between pb-2 border-b border-slate-200">
           <h3 className="text-xs font-bold text-slate-800 tracking-wider flex items-center gap-2">
-            <Banknote className="w-4 h-4 text-sky-600" />
+            <Banknote className="w-4 h-4 text-red-600" />
             4. ÖDEME ŞEKLİ VE ŞARTLARI
           </h3>
         </div>
@@ -519,7 +519,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               type="checkbox"
               checked={formData.vadeli?.value || false}
               onChange={(e) => updateField('vadeli', e.target.checked)}
-              className="w-4 h-4 text-sky-600 rounded"
+              className="w-4 h-4 text-red-600 rounded focus:ring-red-500 accent-red-600"
             />
             <span>Vadeli Ödeme</span>
           </label>
@@ -529,7 +529,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               type="checkbox"
               checked={formData.pesin?.value || false}
               onChange={(e) => updateField('pesin', e.target.checked)}
-              className="w-4 h-4 text-sky-600 rounded"
+              className="w-4 h-4 text-red-600 rounded focus:ring-red-500 accent-red-600"
             />
             <span>Peşin</span>
           </label>
@@ -539,7 +539,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               type="checkbox"
               checked={formData.krediKarti?.value || false}
               onChange={(e) => updateField('krediKarti', e.target.checked)}
-              className="w-4 h-4 text-sky-600 rounded"
+              className="w-4 h-4 text-red-600 rounded focus:ring-red-500 accent-red-600"
             />
             <span>Kredi Kartı</span>
           </label>
@@ -549,7 +549,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               type="checkbox"
               checked={formData.cekSenet?.value || false}
               onChange={(e) => updateField('cekSenet', e.target.checked)}
-              className="w-4 h-4 text-sky-600 rounded"
+              className="w-4 h-4 text-red-600 rounded focus:ring-red-500 accent-red-600"
             />
             <span>Çek veya Senet</span>
           </label>
@@ -560,7 +560,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="block text-xs font-bold text-slate-800">Vade Süresi (Gün)</label>
-              <span className="text-[11px] text-sky-700 font-bold bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200">
+              <span className="text-[11px] text-red-700 font-bold bg-red-50 px-2 py-0.5 rounded-md border border-red-200">
                 (Süre seçin)
               </span>
             </div>
@@ -580,7 +580,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                     }}
                     className={`py-2 text-[11px] sm:text-xs font-black rounded-lg transition-all text-center flex items-center justify-center cursor-pointer ${
                       isSelected
-                        ? 'bg-sky-600 text-white shadow-2xs ring-2 ring-sky-400/50'
+                        ? 'bg-red-600 text-white shadow-2xs ring-2 ring-red-400/50'
                         : 'text-slate-700 hover:bg-white/90'
                     }`}
                   >
@@ -590,7 +590,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               })}
             </div>
             <p className="text-[11px] text-slate-500 mt-1">
-              Seçilen Vade: <span className="font-extrabold text-sky-900">{formData.vadeGunu?.value || '30 Gün'}</span>
+              Seçilen Vade: <span className="font-extrabold text-red-900">{formData.vadeGunu?.value || '30 Gün'}</span>
             </p>
           </div>
 
@@ -606,12 +606,12 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 value={formData.iskontoOrani?.value || ''}
                 onChange={(e) => updateField('iskontoOrani', e.target.value)}
                 placeholder="Örn: 10"
-                className="w-full text-sm font-bold pl-7 pr-3 py-2 rounded-xl border border-slate-300 focus:border-sky-500 outline-none text-slate-900 bg-white"
+                className="w-full text-sm font-bold pl-7 pr-3 py-2 rounded-xl border border-slate-300 focus:border-red-500 outline-none text-slate-900 bg-white"
               />
             </div>
             {formData.iskontoOrani?.value && (
-              <p className="text-[11px] text-emerald-700 font-semibold mt-1">
-                Görünüm: <span className="font-extrabold">{formatIskontoOrani(formData.iskontoOrani.value)}</span>
+              <p className="text-[11px] text-slate-600 font-semibold mt-1">
+                Görünüm: <span className="font-extrabold text-slate-800">{formatIskontoOrani(formData.iskontoOrani.value)}</span>
               </p>
             )}
           </div>
@@ -626,14 +626,12 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 const formatted = formatCurrencyTRY(e.target.value);
                 updateField('cariLimit', formatted);
               }}
-              placeholder="Örn: 1.000 TL"
-              className="w-full text-sm font-bold px-3 py-2 rounded-xl border border-slate-300 focus:border-sky-500 text-sky-950 bg-white outline-none shadow-2xs"
+              placeholder="Örn: 50.000 TL"
+              className="w-full text-sm font-bold px-3 py-2 rounded-xl border border-slate-300 focus:border-red-500 text-slate-900 bg-white outline-none shadow-2xs"
             />
-            {formData.cariLimit?.value && (
-              <p className="text-[11px] text-emerald-700 font-semibold mt-1">
-                Tutar: <span className="font-extrabold">{formData.cariLimit.value.replace(/₺/g, 'TL')}</span>
-              </p>
-            )}
+            <p className="text-[11px] text-slate-500 font-medium mt-1">
+              💡 Firma için tanımlanacak cari limit tutarını giriniz (Örn: 50.000 TL veya limit tanımlanmayacaksa 0 TL).
+            </p>
           </div>
         </div>
       </div>
@@ -644,7 +642,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
       <div className="bg-slate-50/80 rounded-xl border border-slate-200/80 p-4 space-y-4">
         <div className="flex items-center justify-between pb-2 border-b border-slate-200">
           <h3 className="text-xs font-bold text-slate-800 tracking-wider flex items-center gap-2">
-            <FileCheck2 className="w-4 h-4 text-sky-600" />
+            <FileCheck2 className="w-4 h-4 text-red-600" />
             5. İSTENİLEN EVRAKLAR & TEMSİLCİ / ONAYLAR
           </h3>
         </div>
@@ -654,10 +652,10 @@ export const FormEditor: React.FC<FormEditorProps> = ({
           <div className="lg:col-span-2 space-y-2">
             <div className="flex items-center justify-between">
               <label className="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <Users className="w-4 h-4 text-sky-600" />
+                <Users className="w-4 h-4 text-red-600" />
                 <span>Temsilci Seçimi</span>
               </label>
-              <span className="text-[11px] text-sky-700 font-bold bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200">
+              <span className="text-[11px] text-red-700 font-bold bg-red-50 px-2 py-0.5 rounded-md border border-red-200">
                 (İsme tıklayarak doğrudan seçin)
               </span>
             </div>
@@ -668,7 +666,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                   ? settings.temsilciler
                   : DEFAULT_REPRESENTATIVES
                 ).map((rep) => {
-                  const isSelected = (formData.temsilci?.value || settings.temsilci) === rep;
+                  const isSelected = formData.temsilci?.value === rep;
                   return (
                     <button
                       key={rep}
@@ -681,8 +679,8 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                       }}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                         isSelected
-                          ? 'bg-sky-600 text-white shadow-sm ring-2 ring-sky-400/50 scale-102'
-                          : 'bg-slate-100 hover:bg-sky-50 text-slate-700 hover:text-sky-800 border border-slate-200/80'
+                          ? 'bg-red-600 text-white shadow-sm ring-2 ring-red-400/50 scale-102'
+                          : 'bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-800 border border-slate-200/80'
                       }`}
                     >
                       {isSelected && <Check className="w-3.5 h-3.5 text-white shrink-0" />}
@@ -692,19 +690,25 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 })}
               </div>
             </div>
-            <p className="text-[11px] text-slate-500 flex items-center gap-1">
-              <span>💡 Formun sağ üst köşesinde ve alt onay kısmında seçtiğiniz temsilci görünecektir.</span>
-            </p>
+            {!formData.temsilci?.value ? (
+              <p className="text-[11px] text-amber-800 font-extrabold bg-amber-50 p-2 rounded-lg border border-amber-200 mt-1.5 flex items-center gap-1.5">
+                <span>⚠️ Henüz temsilci seçilmedi. Lütfen yukarıdaki listeden bir temsilciye tıklayarak seçiniz.</span>
+              </p>
+            ) : (
+              <p className="text-[11px] text-slate-500 flex items-center gap-1">
+                <span>💡 Seçilen temsilci: <strong>{formData.temsilci.value}</strong></span>
+              </p>
+            )}
           </div>
 
           {/* Doküman Kodu / Çalışma Şekli */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <label className="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <FileText className="w-4 h-4 text-sky-600" />
+                <FileText className="w-4 h-4 text-red-600" />
                 <span>Doküman Kodu / Çalışma Şekli</span>
               </label>
-              <span className="text-[11px] text-sky-700 font-bold bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200">
+              <span className="text-[11px] text-red-700 font-bold bg-red-50 px-2 py-0.5 rounded-md border border-red-200">
                 (Tıklayarak değiştirin)
               </span>
             </div>
@@ -724,7 +728,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                     title={`Doküman Kodunu ${code} olarak değiştir: ${desc}`}
                     className={`py-2 text-xs font-black rounded-lg transition-all text-center flex items-center justify-center gap-1 cursor-pointer ${
                       isSelected
-                        ? 'bg-sky-600 text-white shadow-sm ring-2 ring-sky-400/50'
+                        ? 'bg-red-600 text-white shadow-sm ring-2 ring-red-400/50'
                         : 'text-slate-700 hover:bg-white/90'
                     }`}
                   >
@@ -741,7 +745,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
         <div className="pt-3 border-t border-slate-200/80">
           <div className="flex items-center justify-between mb-2">
             <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-              <Paperclip className="w-4 h-4 text-sky-600" />
+              <Paperclip className="w-4 h-4 text-red-600" />
               <span>Ek Belgeler & Evrak Yükleme</span>
               <span className="text-[11px] font-normal text-slate-500">(Vergi Levhası, İmza Sirküsü vb.)</span>
             </label>
@@ -754,7 +758,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                     formData.firmaAdi?.value || 'Cari'
                   )
                 }
-                className="flex items-center space-x-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-bold px-3 py-1 rounded-lg shadow-sm transition-all"
+                className="flex items-center space-x-1.5 bg-rose-700 hover:bg-rose-600 text-white text-[11px] font-bold px-3 py-1 rounded-lg shadow-sm transition-all"
                 title="Yüklenen Tüm Ek Belgeleri ZIP Olarak Paketleyip İndir"
               >
                 <Archive className="w-3.5 h-3.5" />
@@ -768,13 +772,14 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value as any)}
-                className="w-full text-xs font-semibold px-2.5 py-2 rounded-lg border border-slate-300 focus:border-sky-500 outline-none bg-slate-50 text-slate-800"
+                className="w-full text-xs font-semibold px-2.5 py-2 rounded-lg border border-slate-300 focus:border-red-500 outline-none bg-slate-50 text-slate-800"
               >
                 <option value="Vergi Levhası">1. Vergi Levhası</option>
                 <option value="İmza Sirküsü">2. İmza Sirküsü</option>
                 <option value="Ticaret Sicil Gazetesi">3. Ticaret Sicil Gazetesi</option>
                 <option value="Faaliyet Belgesi">4. Faaliyet Belgesi</option>
-                <option value="Diğer">5. Diğer Ek Belge</option>
+                <option value="Dekont">5. Dekont / Ödeme Makbuzu</option>
+                <option value="Diğer">6. Diğer Ek Belge</option>
               </select>
             </div>
 
@@ -790,9 +795,9 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               />
               <label
                 htmlFor="attached-file-upload-input"
-                className="w-full flex items-center justify-center space-x-2 bg-sky-50 hover:bg-sky-100 text-sky-800 border border-dashed border-sky-300 hover:border-sky-400 font-bold text-xs py-2 px-3 rounded-lg cursor-pointer transition-all text-center"
+                className="w-full flex items-center justify-center space-x-2 bg-red-50 hover:bg-red-100 text-red-800 border border-dashed border-red-300 hover:border-red-400 font-bold text-xs py-2 px-3 rounded-lg cursor-pointer transition-all text-center"
               >
-                <Upload className="w-3.5 h-3.5 text-sky-600" />
+                <Upload className="w-3.5 h-3.5 text-red-600" />
                 <span>Belge Seç / Yükle (PDF, PNG, JPG)</span>
               </label>
             </div>
@@ -804,10 +809,10 @@ export const FormEditor: React.FC<FormEditorProps> = ({
               {formData.attachedFiles.value.map((file) => (
                 <div
                   key={file.id}
-                  className="flex items-center justify-between p-2 bg-white rounded-lg border border-slate-200 text-xs hover:border-sky-300 transition-all"
+                  className="flex items-center justify-between p-2 bg-white rounded-lg border border-slate-200 text-xs hover:border-red-300 transition-all"
                 >
                   <div className="flex items-center space-x-2.5 overflow-hidden">
-                    <span className="bg-sky-100 text-sky-800 font-bold text-[10px] px-2 py-0.5 rounded shrink-0">
+                    <span className="bg-red-100 text-red-800 font-bold text-[10px] px-2 py-0.5 rounded shrink-0">
                       {file.category}
                     </span>
                     <FileText className="w-4 h-4 text-slate-400 shrink-0" />
@@ -823,7 +828,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                     <button
                       type="button"
                       onClick={() => downloadSingleFile(file)}
-                      className="flex items-center space-x-1 bg-sky-600 hover:bg-sky-500 text-white font-bold text-[11px] px-2.5 py-1 rounded-md transition-all shadow-2xs cursor-pointer"
+                      className="flex items-center space-x-1 bg-red-600 hover:bg-red-500 text-white font-bold text-[11px] px-2.5 py-1 rounded-md transition-all shadow-2xs cursor-pointer"
                       title="Belgeyi Cihaza İndir"
                     >
                       <Download className="w-3.5 h-3.5" />
@@ -854,7 +859,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
         <button
           type="button"
           onClick={onGeneratePdf}
-          className="flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm sm:text-base px-7 py-3 rounded-2xl font-extrabold transition-all shadow-lg shadow-emerald-700/25 active:scale-98 cursor-pointer"
+          className="flex items-center space-x-2 bg-gradient-to-r from-red-600 via-red-700 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white text-sm sm:text-base px-8 py-3.5 rounded-2xl font-extrabold transition-all shadow-lg shadow-red-950/20 active:scale-98 cursor-pointer"
         >
           <FileDown className="w-5 h-5" />
           <span>PDF İndir</span>

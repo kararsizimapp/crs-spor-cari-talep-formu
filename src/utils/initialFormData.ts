@@ -20,9 +20,9 @@ export const DEFAULT_REPRESENTATIVES: string[] = [
 ];
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  temsilci: 'Mustafa Can',
+  temsilci: '',
   temsilciler: DEFAULT_REPRESENTATIVES,
-  cariLimit: '',
+  cariLimit: '0 TL',
   website: 'www.formatasarim.com',
   gonderimEpostasi: 'muhasebe@crsspor.com',
   dokumanKodu: 'Q İF',
@@ -58,12 +58,12 @@ export function createEmptyFormData(settings: AppSettings = DEFAULT_SETTINGS): C
     krediKarti: { value: false, confidence: 'high' },
     cekSenet: { value: false, confidence: 'high' },
     iskontoOrani: { value: '', confidence: 'high' },
-    cariLimit: { value: '', confidence: 'high' },
+    cariLimit: { value: settings.cariLimit ?? '0 TL', confidence: 'high' },
 
     evraklar: { value: ['1- Vergi Levhası', '2- İmza Sirküsü'], confidence: 'high' },
     attachedFiles: { value: [], confidence: 'high' },
 
-    temsilci: { value: settings.temsilci, confidence: 'high' },
+    temsilci: { value: settings.temsilci || '', confidence: 'high' },
     dokumanKodu: { value: settings.dokumanKodu || 'Q', confidence: 'high' },
     tarih: { value: formatDateTurkish(), confidence: 'high' },
     kaseImzaVar: { value: false, confidence: 'high' },

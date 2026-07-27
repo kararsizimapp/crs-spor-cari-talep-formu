@@ -39,7 +39,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
         {/* Modal Header */}
         <div className="bg-slate-900 text-white px-4 sm:px-6 py-3 flex items-center justify-between border-b border-slate-800 shrink-0">
           <div className="flex items-center space-x-2">
-            <FileText className="w-5 h-5 text-sky-400" />
+            <FileText className="w-5 h-5 text-red-400" />
             <h3 className="font-bold text-sm sm:text-base">A4 Cari Hesap Açma Talep Formu Ön İzleme</h3>
           </div>
           <div className="flex items-center space-x-2">
@@ -48,7 +48,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
                 onClick={() =>
                   downloadAllFilesZip(attachedFiles, formData.firmaAdi?.value || 'Cari')
                 }
-                className="hidden md:flex items-center space-x-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm"
+                className="hidden md:flex items-center space-x-1.5 bg-rose-700 hover:bg-rose-600 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition-all shadow-sm"
                 title="Yüklenen Tüm Ek Belgeleri ZIP Olarak Paketleyip İndir"
               >
                 <Archive className="w-3.5 h-3.5" />
@@ -64,7 +64,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
             </button>
             <button
               onClick={handleDownloadPdf}
-              className="flex items-center space-x-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-1.5 rounded-lg font-bold transition-all shadow-sm"
+              className="flex items-center space-x-1.5 bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white text-xs px-4 py-1.5 rounded-lg font-bold transition-all shadow-sm"
             >
               <Download className="w-3.5 h-3.5" />
               <span>PDF İndir</span>
@@ -94,7 +94,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
                 </span>
 
                 {/* Left Logo */}
-                <div className="bg-slate-900 text-white px-3 py-3 rounded text-center w-32 shrink-0 flex items-center justify-center">
+                <div className="bg-gradient-to-br from-red-700 via-red-800 to-rose-950 text-white px-3 py-3 rounded text-center w-32 shrink-0 flex items-center justify-center shadow-sm">
                   <div className="font-black text-sm tracking-wider">CRS SPOR</div>
                 </div>
 
@@ -109,8 +109,8 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
                 </div>
 
                 {/* Right Agent Box */}
-                <div className="border border-slate-900 rounded w-32 text-center overflow-hidden shrink-0 flex flex-col justify-between">
-                  <div className="bg-slate-800 text-white font-bold text-[9px] py-0.5 text-center">TEMSİLCİ</div>
+                <div className="border border-red-900 rounded w-32 text-center overflow-hidden shrink-0 flex flex-col justify-between">
+                  <div className="bg-red-900 text-white font-bold text-[9px] py-0.5 text-center">TEMSİLCİ</div>
                   <div className="font-extrabold text-xs py-2 text-slate-900 text-center flex items-center justify-center flex-1">
                     {formData.temsilci?.value || settings.temsilci || '-'}
                   </div>
@@ -118,7 +118,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
               </div>
 
               {/* Main Title Banner */}
-              <div className="bg-slate-900 text-white font-bold text-xs px-3 py-1.5 mb-2 tracking-wider">
+              <div className="bg-gradient-to-r from-red-900 via-rose-900 to-red-950 text-white font-bold text-xs px-3 py-1.5 mb-2 tracking-wider rounded-sm shadow-sm">
                 CARİ FİRMA BİLGİLERİ
               </div>
 
@@ -187,11 +187,11 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
               </div>
 
               {/* Title 2: Firma Yetkilileri */}
-              <div className="bg-slate-900 text-white font-bold text-xs px-3 py-1.5 mb-2 tracking-wider">
+              <div className="bg-gradient-to-r from-red-900 via-rose-900 to-red-950 text-white font-bold text-xs px-3 py-1.5 mb-2 tracking-wider rounded-sm shadow-sm">
                 FİRMA YETKİLİLERİ
               </div>
               <div className="border border-slate-300 rounded-sm overflow-hidden mb-4 text-[11px]">
-                <div className="grid grid-cols-2 bg-slate-200 font-bold text-slate-800 border-b border-slate-300 p-1">
+                <div className="grid grid-cols-2 bg-red-100 font-bold text-red-950 border-b border-red-200 p-1">
                   <div>ŞİRKET YETKİLİSİ</div>
                   <div>MUHASEBE / SATIN ALMA YETKİLİSİ</div>
                 </div>
@@ -216,7 +216,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
               </div>
 
               {/* Title 3: Banka Bilgileri */}
-              <div className="bg-slate-900 text-white font-bold text-xs px-3 py-1.5 mb-2 tracking-wider">
+              <div className="bg-gradient-to-r from-red-900 via-rose-900 to-red-950 text-white font-bold text-xs px-3 py-1.5 mb-2 tracking-wider rounded-sm shadow-sm">
                 BANKA BİLGİLERİ
               </div>
               <div className="border border-slate-300 rounded-sm overflow-hidden mb-4 text-[11px]">
@@ -228,39 +228,39 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
                 </div>
                 <div className="grid grid-cols-4">
                   <div className="bg-slate-100 font-bold p-1.5 border-r border-slate-200">IBAN Numarası</div>
-                  <div className="p-1.5 col-span-3 font-mono font-bold text-sky-900">{formData.iban?.value || '-'}</div>
+                  <div className="p-1.5 col-span-3 font-mono font-bold text-red-900">{formData.iban?.value || '-'}</div>
                 </div>
               </div>
 
               {/* Title 4: Ödeme Şekli */}
-              <div className="bg-slate-900 text-white font-bold text-xs px-3 py-1.5 mb-2 tracking-wider">
+              <div className="bg-gradient-to-r from-red-900 via-rose-900 to-red-950 text-white font-bold text-xs px-3 py-1.5 mb-2 tracking-wider rounded-sm shadow-sm">
                 ÖDEME ŞEKLİ
               </div>
               <div className="border border-slate-300 rounded-sm p-3 mb-4 text-[11px] space-y-2 bg-slate-50">
                 <div className="flex flex-wrap gap-5 font-semibold text-slate-800">
                   <div className="flex items-center space-x-1.5">
-                    <span className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${formData.vadeli?.value ? 'bg-sky-600 border-sky-600 text-white font-bold text-[10px]' : 'border-slate-400 bg-white'}`}>
+                    <span className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${formData.vadeli?.value ? 'bg-red-600 border-red-600 text-white font-bold text-[10px]' : 'border-slate-400 bg-white'}`}>
                       {formData.vadeli?.value && '✓'}
                     </span>
                     <span>Vadeli Ödeme {formData.vadeli?.value && formData.vadeGunu?.value ? `(${formData.vadeGunu.value})` : ''}</span>
                   </div>
 
                   <div className="flex items-center space-x-1.5">
-                    <span className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${formData.pesin?.value ? 'bg-sky-600 border-sky-600 text-white font-bold text-[10px]' : 'border-slate-400 bg-white'}`}>
+                    <span className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${formData.pesin?.value ? 'bg-red-600 border-red-600 text-white font-bold text-[10px]' : 'border-slate-400 bg-white'}`}>
                       {formData.pesin?.value && '✓'}
                     </span>
                     <span>Peşin</span>
                   </div>
 
                   <div className="flex items-center space-x-1.5">
-                    <span className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${formData.krediKarti?.value ? 'bg-sky-600 border-sky-600 text-white font-bold text-[10px]' : 'border-slate-400 bg-white'}`}>
+                    <span className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${formData.krediKarti?.value ? 'bg-red-600 border-red-600 text-white font-bold text-[10px]' : 'border-slate-400 bg-white'}`}>
                       {formData.krediKarti?.value && '✓'}
                     </span>
                     <span>Kredi Kartı</span>
                   </div>
 
                   <div className="flex items-center space-x-1.5">
-                    <span className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${formData.cekSenet?.value ? 'bg-sky-600 border-sky-600 text-white font-bold text-[10px]' : 'border-slate-400 bg-white'}`}>
+                    <span className={`w-3.5 h-3.5 rounded border flex items-center justify-center ${formData.cekSenet?.value ? 'bg-red-600 border-red-600 text-white font-bold text-[10px]' : 'border-slate-400 bg-white'}`}>
                       {formData.cekSenet?.value && '✓'}
                     </span>
                     <span>Çek / Senet</span>
@@ -268,7 +268,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
                 </div>
                 <div className="flex justify-between pt-1 border-t border-slate-200 text-slate-700">
                   <span>İskonto Oranı: <strong>{formatIskontoOrani(formData.iskontoOrani?.value)}</strong></span>
-                  <span>Cari Limit: <strong className="text-sky-900 font-bold text-xs">{formData.cariLimit?.value || '-'}</strong></span>
+                  <span>Cari Limit: <strong className="text-red-900 font-bold text-xs">{formData.cariLimit?.value || '-'}</strong></span>
                 </div>
               </div>
 
@@ -279,15 +279,15 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
               <div className="border border-slate-300 rounded-sm p-2.5 mb-4 text-[11px] bg-slate-50 space-y-2">
                 {attachedFiles.length > 0 ? (
                   <div>
-                    <div className="text-emerald-800 font-bold text-[10px] uppercase mb-1.5 flex items-center justify-between">
+                    <div className="text-red-800 font-bold text-[10px] uppercase mb-1.5 flex items-center justify-between">
                       <span>YÜKLENEN EK BELGELER:</span>
-                      <span className="text-[10px] text-emerald-600 font-normal">(Aşağıdaki butonlara basarak dosyaları indirebilirsiniz)</span>
+                      <span className="text-[10px] text-red-600 font-normal">(Aşağıdaki butonlara basarak dosyaları indirebilirsiniz)</span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[10px]">
                       {attachedFiles.map((file) => (
-                        <div key={file.id} className="flex items-center justify-between bg-white p-1.5 rounded border border-emerald-200 shadow-2xs">
+                        <div key={file.id} className="flex items-center justify-between bg-white p-1.5 rounded border border-red-200 shadow-2xs">
                           <div className="flex items-center space-x-1.5 overflow-hidden">
-                            <span className="bg-emerald-100 text-emerald-800 font-bold text-[10px] px-1.5 py-0.5 rounded shrink-0">
+                            <span className="bg-red-100 text-red-800 font-bold text-[10px] px-1.5 py-0.5 rounded shrink-0">
                               {file.category}
                             </span>
                             <span className="font-semibold text-slate-800 truncate text-[11px] max-w-[150px] sm:max-w-[200px]">
@@ -297,7 +297,7 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
                           <button
                             type="button"
                             onClick={() => downloadSingleFile(file)}
-                            className="flex items-center space-x-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] px-2 py-1 rounded transition-all cursor-pointer shrink-0 ml-1 shadow-2xs"
+                            className="flex items-center space-x-1 bg-red-600 hover:bg-red-700 text-white font-bold text-[10px] px-2 py-1 rounded transition-all cursor-pointer shrink-0 ml-1 shadow-2xs"
                             title="Dosyayı İndir"
                           >
                             <Download className="w-3 h-3" />

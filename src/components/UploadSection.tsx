@@ -71,7 +71,7 @@ export const UploadSection: React.FC<UploadSectionProps> = ({
       <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
         <div>
           <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-sky-600" />
+            <Sparkles className="w-5 h-5 text-red-600" />
             1. Belge / Mesaj Yükleyin veya Yapıştırın
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -86,7 +86,7 @@ export const UploadSection: React.FC<UploadSectionProps> = ({
             onClick={() => setActiveTab('file')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
               activeTab === 'file'
-                ? 'bg-white text-sky-700 shadow-sm'
+                ? 'bg-white text-red-700 shadow-sm'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -98,7 +98,7 @@ export const UploadSection: React.FC<UploadSectionProps> = ({
             onClick={() => setActiveTab('text')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
               activeTab === 'text'
-                ? 'bg-white text-sky-700 shadow-sm'
+                ? 'bg-white text-red-700 shadow-sm'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -121,10 +121,10 @@ export const UploadSection: React.FC<UploadSectionProps> = ({
             onClick={() => fileInputRef.current?.click()}
             className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
               isDragging
-                ? 'border-sky-500 bg-sky-50/70 scale-[0.99]'
+                ? 'border-red-500 bg-red-50/70 scale-[0.99]'
                 : selectedFile
-                ? 'border-emerald-400 bg-emerald-50/30'
-                : 'border-slate-300 hover:border-sky-400 hover:bg-slate-50/60'
+                ? 'border-red-500 bg-red-50/40'
+                : 'border-slate-300 hover:border-red-400 hover:bg-slate-50/60'
             }`}
           >
             <input
@@ -156,12 +156,12 @@ export const UploadSection: React.FC<UploadSectionProps> = ({
                     className="max-h-36 rounded-lg shadow-sm border border-slate-200 mb-3 object-contain"
                   />
                 ) : (
-                  <div className="w-16 h-16 bg-sky-100 rounded-2xl flex items-center justify-center text-sky-600 mb-3">
+                  <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center text-red-600 mb-3">
                     <FileText className="w-8 h-8" />
                   </div>
                 )}
-                <div className="flex items-center space-x-2 text-emerald-700 font-bold text-sm mb-1">
-                  <CheckCircle2 className="w-4 h-4" />
+                <div className="flex items-center space-x-2 text-red-700 font-bold text-sm mb-1">
+                  <CheckCircle2 className="w-4 h-4 text-red-600" />
                   <span>{selectedFile.file.name}</span>
                 </div>
                 <p className="text-xs text-slate-500">
@@ -170,12 +170,12 @@ export const UploadSection: React.FC<UploadSectionProps> = ({
               </div>
             ) : (
               <div className="space-y-3">
-                <div className="w-12 h-12 bg-sky-100 text-sky-600 rounded-2xl flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto">
                   <Upload className="w-6 h-6" />
                 </div>
                 <div>
                   <p className="text-sm font-bold text-slate-700">
-                    Sürükleyip bırakın veya <span className="text-sky-600 underline">dosya seçin</span>
+                    Sürükleyip bırakın veya <span className="text-red-600 underline">dosya seçin</span>
                   </p>
                   <p className="text-xs text-slate-400 mt-1">
                     WhatsApp Ekran Görüntüsü, E-posta, PNG, JPG, JPEG veya PDF (Maks. 20 MB)
@@ -190,7 +190,7 @@ export const UploadSection: React.FC<UploadSectionProps> = ({
                     }}
                     className="flex items-center space-x-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3 py-1.5 rounded-lg border border-slate-200 font-medium transition-colors"
                   >
-                    <Camera className="w-3.5 h-3.5 text-sky-600" />
+                    <Camera className="w-3.5 h-3.5 text-red-600" />
                     <span>Kamera ile Çek</span>
                   </button>
                 </div>
@@ -208,7 +208,7 @@ export const UploadSection: React.FC<UploadSectionProps> = ({
             value={pastedText}
             onChange={(e) => setPastedText(e.target.value)}
             placeholder="Örnek: Merhaba, ABC Spor Ltd. Şti. için cari açılış talep ediyoruz. Vergi Dairesi: Kadıköy, Vergi No: 1234567890, Telefon: 0532 111 22 33, IBAN: TR12 0006 2000 0000 0000 0000 00..."
-            className="w-full text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none text-slate-800 placeholder:text-slate-400"
+            className="w-full text-sm p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none text-slate-800 placeholder:text-slate-400"
           />
         </div>
       )}
@@ -223,15 +223,15 @@ export const UploadSection: React.FC<UploadSectionProps> = ({
 
       {/* Progress / Loading Indicator */}
       {isAnalyzing && (
-        <div className="mt-4 p-4 bg-sky-50 border border-sky-200 rounded-xl">
+        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
           <div className="flex items-center space-x-3 mb-2">
-            <Loader2 className="w-5 h-5 text-sky-600 animate-spin" />
-            <span className="text-xs font-bold text-sky-900">
+            <Loader2 className="w-5 h-5 text-red-600 animate-spin" />
+            <span className="text-xs font-bold text-red-900">
               Yapay Zeka Görseli Okuyor & Cari Bilgilerini Analiz Ediyor...
             </span>
           </div>
-          <div className="w-full bg-sky-200 rounded-full h-1.5 overflow-hidden">
-            <div className="bg-sky-600 h-1.5 rounded-full animate-pulse w-3/4"></div>
+          <div className="w-full bg-red-200 rounded-full h-1.5 overflow-hidden">
+            <div className="bg-red-600 h-1.5 rounded-full animate-pulse w-3/4"></div>
           </div>
         </div>
       )}
@@ -242,7 +242,7 @@ export const UploadSection: React.FC<UploadSectionProps> = ({
           type="button"
           disabled={isAnalyzing || (activeTab === 'file' ? !selectedFile : !pastedText.trim())}
           onClick={handleStartAnalysis}
-          className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold text-sm px-6 py-3 rounded-xl shadow-md shadow-sky-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-gradient-to-r from-red-600 via-red-700 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white font-bold text-sm px-6 py-3 rounded-xl shadow-md shadow-red-700/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
           {isAnalyzing ? (
             <>
