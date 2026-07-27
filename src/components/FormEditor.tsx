@@ -609,9 +609,13 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 className="w-full text-sm font-bold pl-7 pr-3 py-2 rounded-xl border border-slate-300 focus:border-red-500 outline-none text-slate-900 bg-white"
               />
             </div>
-            {formData.iskontoOrani?.value && (
+            {formData.iskontoOrani?.value ? (
               <p className="text-[11px] text-slate-600 font-semibold mt-1">
                 Görünüm: <span className="font-extrabold text-slate-800">{formatIskontoOrani(formData.iskontoOrani.value)}</span>
+              </p>
+            ) : (
+              <p className="text-[11px] text-slate-500 font-medium mt-1">
+                💡 Uygulanacak yüzde iskonto oranını giriniz (Örn: %10 için 10 veya iskonto yoksa boş bırakınız).
               </p>
             )}
           </div>
@@ -738,6 +742,9 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 );
               })}
             </div>
+            <p className="text-[11px] text-slate-500 font-medium mt-1">
+              💡 Form üst başlığında yer alacak doküman kodunu seçiniz.
+            </p>
           </div>
         </div>
 
