@@ -31,10 +31,12 @@ export const DEFAULT_SETTINGS: AppSettings = {
 export function createEmptyFormData(settings: AppSettings = DEFAULT_SETTINGS): CariFormData {
   return {
     firmaAdi: { value: '', confidence: 'high' },
+    baglantiliCari: { value: '', confidence: 'high' },
     vergiDairesi: { value: '', confidence: 'high' },
     vergiNo: { value: '', confidence: 'high' },
     vergiNoTuru: { value: 'VKN', confidence: 'high' },
     telefon: { value: '', confidence: 'high' },
+    sabitTelefon: { value: '', confidence: 'high' },
     faks: { value: '', confidence: 'high' },
     eposta: { value: '', confidence: 'high' },
     adres: { value: '', confidence: 'high' },

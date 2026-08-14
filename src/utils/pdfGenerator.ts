@@ -267,17 +267,21 @@ export async function generateCariFormPdf(formData: CariFormData, settings: AppS
     doc.text(formatText(v2 || '-'), marginX + col1W + col2W + col3W + 2, y + 4);
   };
 
-  // Row 1: Firma Adı & Telefon
-  drawRowLabelVal(currentY, 'Firma Adı', formData.firmaAdi?.value, 'Telefon', formData.telefon?.value);
+  // Row 1: Firma Adı & Bağlantılı Cari
+  drawRowLabelVal(currentY, 'Firma Adı', formData.firmaAdi?.value, 'Bağlantılı Cari', formData.baglantiliCari?.value);
   currentY += rowH;
 
-  // Row 2: Vergi Dairesi & Faks Numarası
-  drawRowLabelVal(currentY, 'Vergi Dairesi', formData.vergiDairesi?.value, 'Faks Numarası', formData.faks?.value);
-  currentY += rowH;
-
-  // Row 3: Vergi No / T.C. Kimlik No & E-Posta
+  // Row 2: Vergi Dairesi & Vergi No / T.C. Kimlik No
   const taxLabel = formData.vergiNoTuru?.value === 'TCKN' ? 'T.C. Kimlik No' : 'Vergi No';
-  drawRowLabelVal(currentY, taxLabel, formData.vergiNo?.value, 'E-Posta', formData.eposta?.value);
+  drawRowLabelVal(currentY, 'Vergi Dairesi', formData.vergiDairesi?.value, taxLabel, formData.vergiNo?.value);
+  currentY += rowH;
+
+  // Row 3: Telefon (GSM) & Sabit Telefon
+  drawRowLabelVal(currentY, 'Telefon (GSM)', formData.telefon?.value, 'Sabit Telefon', formData.sabitTelefon?.value);
+  currentY += rowH;
+
+  // Row 4: Faks Numarası & E-Posta
+  drawRowLabelVal(currentY, 'Faks Numarası', formData.faks?.value, 'E-Posta', formData.eposta?.value);
   currentY += rowH;
 
   // Row 4: Firma Adresi (Dynamic Multi-Line Height)

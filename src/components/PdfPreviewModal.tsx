@@ -127,20 +127,26 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
                 <div className="grid grid-cols-4 border-b border-slate-200">
                   <div className="bg-slate-100 font-bold p-1.5 border-r border-slate-200">Firma Adı</div>
                   <div className="p-1.5 border-r border-slate-200 col-span-1 font-semibold">{formData.firmaAdi?.value || '-'}</div>
-                  <div className="bg-slate-100 font-bold p-1.5 border-r border-slate-200">Telefon</div>
-                  <div className="p-1.5">{formData.telefon?.value || '-'}</div>
+                  <div className="bg-slate-100 font-bold p-1.5 border-r border-slate-200">Bağlantılı Cari</div>
+                  <div className="p-1.5">{formData.baglantiliCari?.value || '-'}</div>
                 </div>
                 <div className="grid grid-cols-4 border-b border-slate-200">
                   <div className="bg-slate-100 font-bold p-1.5 border-r border-slate-200">Vergi Dairesi</div>
                   <div className="p-1.5 border-r border-slate-200">{formData.vergiDairesi?.value || '-'}</div>
-                  <div className="bg-slate-100 font-bold p-1.5 border-r border-slate-200">Faks Numarası</div>
-                  <div className="p-1.5">{formData.faks?.value || '-'}</div>
-                </div>
-                <div className="grid grid-cols-4 border-b border-slate-200">
                   <div className="bg-slate-100 font-bold p-1.5 border-r border-slate-200">
                     {formData.vergiNoTuru?.value === 'TCKN' ? 'T.C. Kimlik No' : 'Vergi No'}
                   </div>
-                  <div className="p-1.5 border-r border-slate-200 font-mono font-bold">{formData.vergiNo?.value || '-'}</div>
+                  <div className="p-1.5 font-mono font-bold">{formData.vergiNo?.value || '-'}</div>
+                </div>
+                <div className="grid grid-cols-4 border-b border-slate-200">
+                  <div className="bg-slate-100 font-bold p-1.5 border-r border-slate-200">Telefon (GSM)</div>
+                  <div className="p-1.5 border-r border-slate-200">{formData.telefon?.value || '-'}</div>
+                  <div className="bg-slate-100 font-bold p-1.5 border-r border-slate-200">Sabit Telefon</div>
+                  <div className="p-1.5">{formData.sabitTelefon?.value || '-'}</div>
+                </div>
+                <div className="grid grid-cols-4 border-b border-slate-200">
+                  <div className="bg-slate-100 font-bold p-1.5 border-r border-slate-200">Faks Numarası</div>
+                  <div className="p-1.5 border-r border-slate-200">{formData.faks?.value || '-'}</div>
                   <div className="bg-slate-100 font-bold p-1.5 border-r border-slate-200">E-Posta</div>
                   <div className="p-1.5">{formData.eposta?.value || '-'}</div>
                 </div>

@@ -20,10 +20,12 @@ export interface FieldWithConfidence<T = string> {
 export interface CariFormData {
   // 1. Cari Firma Bilgileri
   firmaAdi: FieldWithConfidence<string>;
+  baglantiliCari?: FieldWithConfidence<string>;
   vergiDairesi: FieldWithConfidence<string>;
   vergiNo: FieldWithConfidence<string>; // 10 digits Tax or 11 digits TC
   vergiNoTuru: FieldWithConfidence<'VKN' | 'TCKN'>;
   telefon: FieldWithConfidence<string>;
+  sabitTelefon?: FieldWithConfidence<string>;
   faks: FieldWithConfidence<string>;
   eposta: FieldWithConfidence<string>;
   adres?: FieldWithConfidence<string>;

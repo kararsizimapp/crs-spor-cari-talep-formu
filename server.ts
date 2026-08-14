@@ -82,10 +82,12 @@ const extractionResponseSchema = {
   type: Type.OBJECT,
   properties: {
     firmaAdi: fieldSchema(Type.STRING, "Firma Unvanı veya Adı"),
+    baglantiliCari: fieldSchema(Type.STRING, "Bağlantılı Cari / Grup Şirketi / Ana Cari Adı"),
     vergiDairesi: fieldSchema(Type.STRING, "Vergi Dairesi Adı"),
     vergiNo: fieldSchema(Type.STRING, "Vergi Kimlik No veya TC Kimlik No"),
     vergiNoTuru: fieldSchema(Type.STRING, "VKN veya TCKN"),
-    telefon: fieldSchema(Type.STRING, "Firma Sabit veya Cep Telefonu"),
+    telefon: fieldSchema(Type.STRING, "Firma Mobil / GSM veya İletişim Telefonu"),
+    sabitTelefon: fieldSchema(Type.STRING, "Firma Alan Kodlu Sabit Telefonu (örn: 0212 000 00 00)"),
     faks: fieldSchema(Type.STRING, "Faks Numarası"),
     eposta: fieldSchema(Type.STRING, "Firma E-posta Adresi"),
     adres: fieldSchema(Type.STRING, "Firma Açık Adresi veya Tebligat Adresi"),

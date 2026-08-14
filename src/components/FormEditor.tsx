@@ -124,6 +124,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
 
   // Validation Checks
   const phoneValidation = normalizePhone(formData.telefon?.value || '');
+  const sabitPhoneValidation = normalizePhone(formData.sabitTelefon?.value || '');
   const emailValidation = validateEmail(formData.eposta?.value || '');
   const ibanValidation = normalizeIBAN(formData.iban?.value || '');
   const taxValidation = validateTaxOrTCKN(formData.vergiNo?.value || '');
@@ -156,7 +157,7 @@ export const FormEditor: React.FC<FormEditorProps> = ({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Firma Adı */}
-          <div className="sm:col-span-2">
+          <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
               Firma Adı / Unvanı <span className="text-red-500">*</span>
             </label>
@@ -182,6 +183,23 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Bağlantılı Cari */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Bağlantılı Cari / Ana Cari
+            </label>
+            <input
+              type="text"
+              value={formData.baglantiliCari?.value || ''}
+              onChange={(e) => updateField('baglantiliCari', e.target.value)}
+              placeholder="Örn: CRS SPOR A.Ş. / Merkez Şube"
+              className="w-full text-sm px-3 py-2 rounded-lg border border-slate-300 focus:border-red-500 outline-none"
+            />
+            <p className="text-[11px] text-slate-500 font-medium mt-1">
+              💡 Varsa firmanın bağlı olduğu ana cari, grup şirketi veya ilişkili cari unvanını/kodunu giriniz.
+            </p>
           </div>
 
           {/* Vergi Dairesi */}
@@ -233,10 +251,10 @@ export const FormEditor: React.FC<FormEditorProps> = ({
             )}
           </div>
 
-          {/* Telefon */}
+          {/* GSM / Telefon Numarası */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Telefon Numarası
+              Telefon Numarası (GSM / Cep)
             </label>
             <input
               type="text"
@@ -249,8 +267,37 @@ export const FormEditor: React.FC<FormEditorProps> = ({
                   : 'border-slate-300 focus:border-red-500'
               }`}
             />
-            {!phoneValidation.isValid && phoneValidation.warning && (
+            {!phoneValidation.isValid && phoneValidation.warning ? (
               <p className="text-[11px] text-red-600 mt-1">{phoneValidation.warning}</p>
+            ) : (
+              <p className="text-[11px] text-slate-500 font-medium mt-1">
+                💡 Firmanın mobil veya yetkili iletişim telefon numarasını giriniz.
+              </p>
+            )}
+          </div>
+
+          {/* Sabit Telefon */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Sabit Telefon Numarası
+            </label>
+            <input
+              type="text"
+              value={formData.sabitTelefon?.value || ''}
+              onChange={(e) => updateField('sabitTelefon', e.target.value)}
+              placeholder="0212 000 00 00 veya 0312..."
+              className={`w-full text-sm px-3 py-2 rounded-lg border outline-none ${
+                !sabitPhoneValidation.isValid
+                  ? 'border-red-400 bg-red-50/50'
+                  : 'border-slate-300 focus:border-red-500'
+              }`}
+            />
+            {!sabitPhoneValidation.isValid && sabitPhoneValidation.warning ? (
+              <p className="text-[11px] text-red-600 mt-1">{sabitPhoneValidation.warning}</p>
+            ) : (
+              <p className="text-[11px] text-slate-500 font-medium mt-1">
+                💡 Firmanın alan kodlu sabit hat telefon numarasını giriniz (Örn: 0212 000 00 00).
+              </p>
             )}
           </div>
 
